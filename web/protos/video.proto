@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "grpc_video_server";
+
+package VideoStream;
+
+service VideoStream {
+    rpc stream(StreamRequest) returns (stream VideoChunk){}
+}
+
+message VideoChunk { 
+	string video_id = 1;
+    bytes  chunk = 2;
+}
+
+// The request message containing the user's name.
+message StreamRequest { 
+	string video_id = 1;
+    string user_id = 2;
+}

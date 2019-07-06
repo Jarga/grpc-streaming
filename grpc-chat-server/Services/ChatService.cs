@@ -21,7 +21,7 @@ namespace grpc_chat_server
                 commentFeeds.TryAdd(request.VideoId, new ConcurrentDictionary<string, Channel<Message>>());
             }
 
-            var subscriberChannel = Channel.CreateBounded<Message>(100);
+            var subscriberChannel = Channel.CreateBounded<Message>(new BoundedChannelOptions(100) { FullMode = BoundedChannelFullMode.DropOldest });
             commentFeeds[request.VideoId][request.UserId] = subscriberChannel;
 
             Console.WriteLine($"Subscribed: Video: {request.VideoId}, User: {request.UserId}");

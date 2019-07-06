@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option csharp_namespace = "grpc_chat_server";
+
+package Chat;
+
+//Service class to be used by the clients
+service Chat { 
+    rpc join(JoinRequest) returns (stream Message){}
+    rpc send(Message) returns (PostedResponse){}
+}
+
+ //Information that will be passed between client and service
+message Message { 
+	string video_id = 1;
+    string user_id = 2;
+    string content = 3;
+}
+
+message JoinRequest { 
+	string video_id = 1;
+    string user_id = 2;
+}
+
+ //Information that will be passed between client and service
+message PostedResponse { 
+	string video_id = 1;
+    string user_id = 2;
+    bool success = 3;
+}
