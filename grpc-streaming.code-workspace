@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "~"
+		},
+		{
+			"path": "./grpc-chat-client",
+			"name": "grpc-chat-client"
+		},
+		{
+			"path": "./grpc-chat-server",
+			"name": "grpc-chat-server"
+		},
+		{
+			"path": "./grpc-video-server",
+			"name": "grpc-video-server"
+		},
+		{
+			"path": "./web",
+			"name": "web"
+		},
+		{
+			"path": "./docker",
+			"name": "docker"
+		}
+	],
+	"settings": {}
+}
