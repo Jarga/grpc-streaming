@@ -6,7 +6,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production npm run bundle:production",
     "bundle:dev": "cross-env NODE_ENV=development webpack -w --progress",
-    "serve": "PORT=3000 node app.js",
+    "serve": "cross-env PORT=3000 node app.js",
     "start": "npm i && npm run serve && npm run bundle:dev"
   },
   "author": "",
