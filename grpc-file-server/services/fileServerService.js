@@ -4,13 +4,13 @@ const filesServerRepo = require('../repos/filesServerRepo')
 module.exports = {
     service: domain.Files.service,
     implementation: {
-        async write(call) {
+        write(call) {
             const { fileName } = call.request
-            await filesServerRepo.write(fileName, call)
+            filesServerRepo.write(fileName, call)
         },
-        async read(call) {
+        read(call) {
             const { fileName } = call.request
-            await filesServerRepo.read(fileName).pipe(call)
+            filesServerRepo.read(fileName).pipe(call)
         },
     },
 }

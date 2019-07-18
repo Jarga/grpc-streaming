@@ -1,0 +1,28 @@
+{
+  "name": "grpc-cli",
+  "version": "1.0.0",
+  "description": "Command line utility for gRPC streaming",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jarga/grpc-streaming.git"
+  },
+  "keywords": [
+    "gRPC",
+    "stream",
+    "nodejs"
+  ],
+  "author": "Jp Dienst",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@grpc/proto-loader": "^0.5.1",
+    "argparse": "^1.0.10",
+    "grpc": "^1.22.2"
+  },
+  "bin": {
+    "grpc-cli": "app.js"
+  }
+}
