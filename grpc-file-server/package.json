@@ -2,7 +2,7 @@
   "name": "grpc-file-server",
   "version": "1.0.0",
   "description": "A simple file server for streaming data over gRPC",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,7 +23,10 @@
   "homepage": "https://github.com/Jarga/grpc-streaming#readme",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.1",
+    "config": "^3.2.0",
+    "deepcopy": "^2.0.0",
     "grpc": "^1.22.2",
-    "mongodb": "^3.2.7"
+    "mongodb": "^3.2.7",
+    "winston": "^3.2.1"
   }
 }

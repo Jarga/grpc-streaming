@@ -1,0 +1,31 @@
+/**
+https://developers.google.com/protocol-buffers/docs/proto3#other
+*/
+
+syntax = "proto3";
+
+message Metadata {
+  string fileType = 1;
+  string createdBy = 2;
+  repeated string tags = 3;
+}
+
+message ReadRequest { string fileName = 1; }
+
+message ReadResponse {
+  string fileName = 1;
+  bytes chunk = 2;
+}
+
+message WriteRequest {
+  string fileName = 1;
+  bytes chunk = 2;
+}
+
+message WriteResponse {}
+
+service Files {
+  rpc readFile(ReadRequest) returns (stream ReadResponse) {}
+
+  rpc writeFile(stream WriteRequest) returns (WriteResponse) {}
+}
