@@ -26,13 +26,16 @@ fileServer.addArgument(
     }
 )
 
-
 const args = parser.parseArgs()
 
 if (args.write) {
-    client.write(args.write)
+    client.write(args.write).then(() => {
+        console.log(`Wrote file [${args.write}] to server!`)
+        process.exit(0)
+    })
 } else if (args.read) {
-    client.read(args.read)
+    client.read(args.read).then(() => {
+        console.log(`Read file [${args.write}] from server!`)
+        process.exit(0)
+    })
 }
-
-process.exit(0)

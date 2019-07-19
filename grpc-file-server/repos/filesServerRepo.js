@@ -10,7 +10,9 @@ const { connectionUri } = config.mongodb
 
 module.exports.write = async (fileName, fileStream) => {
     logger.info('Connecting to MongoDB [%s]', connectionUri)
-    const client = new mongodb.MongoClient(connectionUri)
+    const client = new mongodb.MongoClient(connectionUri, { useNewUrlParser: true })
+    await client.connect()
+
     const db = client.db(dbName)
     const bucket = new mongodb.GridFSBucket(db, {
         chunkSizeBytes: 1024,
@@ -33,7 +35,9 @@ module.exports.write = async (fileName, fileStream) => {
 
 module.exports.read = async (fileName) => {
     logger.info('Connecting to MongoDB [%s]', connectionUri)
-    const client = new mongodb.MongoClient(connectionUri)
+    const client = new mongodb.MongoClient(connectionUri, { useNewUrlParser: true })
+    await client.connect()
+
     const db = client.db(dbName)
     const bucket = new mongodb.GridFSBucket(db, {
         chunkSizeBytes: 1024,
