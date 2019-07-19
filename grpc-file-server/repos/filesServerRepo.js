@@ -1,5 +1,4 @@
 const logger = require('../logging').create('repo')
-const assert = require('assert')
 const config = require('config')
 const mongodb = require('mongodb')
 const dbName = 'fileServer'
@@ -18,6 +17,26 @@ module.exports.create = async () => {
     })
 
     return {
+        getFileInfo: async (filter) => {
+            logger.debug('Getting file info from [%s.%s] by [%o]', dbName, bucketName, filter)
+            const cursor = await bucket.find(filter, { limit: 1 })
+            const [file] = await cursor.toArray()
+            if (!file) {
+                const err = new Error('File not found')
+                err.code = 'ENOENT'
+                throw err
+            }
+
+            return file
+        },
+        removeFile: async (filter) => {
+            logger.debug('Deleting from [%s.%s] by [%o] ', dbName, bucketName, filter)
+            const cursor = await bucket.find(filter, { limit: 1 })
+            const files = await cursor.toArray()
+            for (const file of files) {
+                await bucket.delete(file._id)
+            }
+        },
         listFiles: async (filter = {}) => {
             logger.debug('Listing all documents from [%s.%s] using filter [%o]', dbName, bucketName, filter)
             const cursor = await bucket.find(filter, { limit: 100 })

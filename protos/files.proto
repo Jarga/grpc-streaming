@@ -3,15 +3,21 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 
-// List
+// Common
 message File {
   string _id = 1;
   int64 length = 2;
-  google.protobuf.Timestamp uploadDate = 3;
+  string uploadDate = 3;
   string filename = 5;
   string md5 = 6;
 }
 
+// Get File Info
+message FileInfoRequest { string filename = 1; }
+
+message FileInfoResult { File file = 1; }
+
+// List
 message ListFilesRequest { string filter = 1; }
 
 message ListFilesResult { repeated File files = 1; }
@@ -38,15 +44,24 @@ message UploadRequest {
   bytes chunk = 2;
 }
 
-message UplpoadResult {}
+message UplpoadResult { File file = 1; }
 
 // Format
 message FormatRequest {}
 
 message FormatResult {}
 
+// Delete
+message DeleteRequest { string filename = 1; }
+
+message DeleteResult {}
+
 // Services
 service FileServer {
+  rpc getFileInfo(FileInfoRequest) returns (FileInfoResult) {}
+
+  rpc removeFile(DeleteRequest) returns (DeleteResult) {}
+
   rpc listFiles(ListFilesRequest) returns (ListFilesResult) {}
 
   rpc download(DownloadRequest) returns (stream DownloadResult) {}

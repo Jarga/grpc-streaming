@@ -11,7 +11,7 @@
             "program": "${workspaceRoot}/app.js",
             "args": [
                 "fileserver",
-                "-c",
+                "-u",
                 "package.json"
             ],
             "cwd": "${workspaceRoot}",
