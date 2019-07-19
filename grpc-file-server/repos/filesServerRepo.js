@@ -18,35 +18,27 @@ module.exports.create = async () => {
     })
 
     return {
+        listFiles: async (filter = {}) => {
+            logger.debug('Listing all documents from [%s.%s] using filter [%o]', dbName, bucketName, filter)
+            const cursor = await bucket.find(filter, { limit: 100 })
+            return await cursor.toArray()
+        },
         formatFileSystem: async () => {
             logger.debug('Removing all documents from [%s.%s]', dbName, bucketName)
-            await bucket.drop()
+            const cursor = await bucket.find({}, { limit: 1 })
+            const files = await cursor.toArray()
+            if (files.length) {
+                await bucket.drop()
+            }
+
         },
         createUploadStream: async (filename) => {
             logger.debug('Uploading file [%s] to [%s.%s]', filename, dbName, bucketName)
-
             return bucket.openUploadStream(filename)
-                .on('error', (error) => {
-                    logger.error('Error uploading file [%s]', filename)
-                    assert.ifError(error)
-                })
-                .on('finish', () => {
-                    logger.info('Completed uploading file [%s]', filename)
-                })
         },
-        createDownloadStream: async (filename) => {
+        createDownloadStream: async (filename, options) => {
             logger.debug('Reading file [%s] to [%s]', dbName, filename)
-
-            const cursor = await bucket.find({ filename })
-            const [file] = await cursor.toArray()
-            return await bucket.openDownloadStream(file._id)
-                .on('error', (error) => {
-                    logger.error('Error uploading file [%s]', filename)
-                    assert.ifError(error)
-                })
-                .on('finish', () => {
-                    logger.info('Completed uploading file [%s]', filename)
-                })
+            return await bucket.openDownloadStreamByName(filename, options)
         },
     }
 }

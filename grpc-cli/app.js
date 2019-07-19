@@ -21,6 +21,13 @@ const fileServer = subparsers.addParser('fileserver', { addHelp: true })
 const client = require('./clients/fileServerClient')
 
 fileServer.addArgument(
+    ['-l', '--listFiles'],
+    {
+        help: 'List files from the server using a provided JSON filter',
+    }
+)
+
+fileServer.addArgument(
     ['-u', '--upload'],
     {
         help: 'Upload a file to the file server',
@@ -31,6 +38,13 @@ fileServer.addArgument(
     ['-d', '--download'],
     {
         help: 'Download a file from the file server',
+    }
+)
+
+fileServer.addArgument(
+    ['-c', '--cat'],
+    {
+        help: 'Concatenates a file from the file server to stdout',
     }
 )
 
@@ -54,12 +68,19 @@ Promise.resolve()
         if (args.upload) {
             await client.upload(args.upload)
             console.log(`Uploaded file [${args.upload}] to server!`)
-        }
-    })
-    .then(async () => {
-        if (args.download) {
+        } else if (args.download) {
             await client.download(args.download)
             console.log(`Downloaded file [${args.download}] from server!`)
+        } else if (args.cat) {
+            await client.cat(args.cat)
+        }
+
+    })
+    .then(async () => {
+        if (args.listFiles) {
+            const files = await client.listFiles(args.listFiles)
+            const output = files.map(f => f.filename)
+            console.log(output.join('\n'))
         }
     })
     .then(() => {

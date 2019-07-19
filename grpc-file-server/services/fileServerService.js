@@ -8,12 +8,23 @@ const { status } = require('grpc')
 module.exports.create = async ({ fileServerRepo }) => ({
     service: domain.FileServer.service,
     implementation: {
+        listFiles: async (call, callback) => {
+            try {
+                logger.debug('Recieved list files request from RPC client')
+                const { filter } = call.request
+                const filterObj = JSON.parse(filter)
+                const files = await fileServerRepo.listFiles(filterObj)
+                callback(null, { files })
+            } catch (error) {
+                logger.error(error)
+                callback(errorToStatus(error))
+            }
+        },
         formatFileSystem: async (_call, callback) => {
             try {
                 logger.debug('Recieved format request from RPC client')
                 await fileServerRepo.formatFileSystem()
                 callback(null, {})
-                logger.info('File system formatted')
             } catch (error) {
                 logger.error(error)
                 callback(errorToStatus(error))
@@ -51,8 +62,8 @@ module.exports.create = async ({ fileServerRepo }) => ({
             logger.info('Recieved download request from RPC client')
 
             try {
-                const { filename } = call.request
-                const readStream = await fileServerRepo.createDownloadStream(filename)
+                const { filename, options } = call.request
+                const readStream = await fileServerRepo.createDownloadStream(filename, options)
                 await pipelineAsync(
                     readStream,
                     createBytesToMessageTransformStream(filename),

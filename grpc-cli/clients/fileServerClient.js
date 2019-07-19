@@ -9,8 +9,12 @@ const util = require('util')
 const pipelineAsync = util.promisify(pipeline)
 
 module.exports.upload = async (filePath) => {
+    if (await !fs.exists(filePath)) {
+        throw new Error(`File ${filePath} does not exist!`)
+    }
+
     const call = client.upload((err) => {
-        throw err
+        if (err) throw (err)
     })
 
     const readStream = fs.createReadStream(filePath)
@@ -20,25 +24,21 @@ module.exports.upload = async (filePath) => {
     call.write({ filename, chunk: null })
 
     // Stream all file data to the client
-    return await pipelineAsync(
+    await pipelineAsync(
         readStream,
         createBytesToMessageTransformStream(filename),
-        call
+        call,
     )
 }
 
 module.exports.download = async (filename) => {
-    const call = client.download({ filename }, (err) => {
-        throw err
-    })
-
     const writeStream = fs.createWriteStream(filename)
+    return await download(filename, writeStream)
+}
 
-    return await pipelineAsync(
-        call,
-        createMessageToBytesTransformStream(),
-        writeStream
-    )
+module.exports.cat = async (filename) => {
+    const writeStream = createBytesToStdOutTransformStream()
+    return await download(filename, writeStream)
 }
 
 module.exports.formatFileSystem = () => new Promise((res, rej) => {
@@ -48,10 +48,35 @@ module.exports.formatFileSystem = () => new Promise((res, rej) => {
     })
 })
 
+module.exports.listFiles = (filter = '{}') => new Promise((res, rej) => {
+    client.listFiles({ filter }, (err, { files }) => {
+        if (err) rej(err)
+        else res(files)
+    })
+})
+
+const download = async (filename, writeStream) => {
+    const call = client.download({ filename })
+
+    await pipelineAsync(
+        call,
+        createMessageToBytesTransformStream(),
+        writeStream,
+    )
+}
+
 const createMessageToBytesTransformStream = () => new Transform({
     objectMode: true,
     transform: (message, _, done) => {
         done(null, message.chunk)
+    },
+})
+
+const createBytesToStdOutTransformStream = () => new Transform({
+    objectMode: true,
+    transform: (bytes, _, done) => {
+        console.log(bytes.toString())
+        done(null)
     },
 })
 

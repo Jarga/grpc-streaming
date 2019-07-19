@@ -11,8 +11,8 @@
             "program": "${workspaceRoot}/app.js",
             "args": [
                 "fileserver",
-                "-d",
-                "dfd.json"
+                "-c",
+                "package.json"
             ],
             "cwd": "${workspaceRoot}",
             "outputCapture": "std",
