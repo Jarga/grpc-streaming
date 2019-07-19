@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 option csharp_namespace = "grpc_file_server";
-package FileServer;
 
 // Common
 message File {
