@@ -1,31 +1,38 @@
-/**
-https://developers.google.com/protocol-buffers/docs/proto3#other
-*/
-
 syntax = "proto3";
 
+// Common
 message Metadata {
   string fileType = 1;
   string createdBy = 2;
   repeated string tags = 3;
 }
 
-message ReadRequest { string fileName = 1; }
+// Download
+message DownloadRequest { string filename = 1; }
 
-message ReadResponse {
-  string fileName = 1;
+message DownloadResult {
+  string filename = 1;
   bytes chunk = 2;
 }
 
-message WriteRequest {
-  string fileName = 1;
+// Upload
+message UploadRequest {
+  string filename = 1;
   bytes chunk = 2;
 }
 
-message WriteResponse {}
+message UplpoadResult {}
 
-service Files {
-  rpc read(ReadRequest) returns (stream ReadResponse) {}
+// Format
+message FormatRequest {}
 
-  rpc write(stream WriteRequest) returns (WriteResponse) {}
+message FormatResult {}
+
+// Services
+service FileServer {
+  rpc download(DownloadRequest) returns (stream DownloadResult) {}
+
+  rpc upload(stream UploadRequest) returns (UplpoadResult) {}
+
+  rpc formatFileSystem(FormatRequest) returns (FormatResult) {}
 }

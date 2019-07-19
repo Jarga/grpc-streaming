@@ -10,9 +10,9 @@
             "name": "Debug",
             "program": "${workspaceRoot}/app.js",
             "args": [
-                "fileServer",
-                "-w",
-                "./package.json"
+                "fileserver",
+                "-d",
+                "dfd.json"
             ],
             "cwd": "${workspaceRoot}",
             "outputCapture": "std",

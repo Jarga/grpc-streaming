@@ -1,14 +1,12 @@
-/**
- * https://mongodb.github.io/node-mongodb-native/3.0/tutorials/gridfs/streaming/
- */
-const logger = require('../logging').create('filer-server-repo')
+const logger = require('../logging').create('repo')
 const assert = require('assert')
 const config = require('config')
 const mongodb = require('mongodb')
 const dbName = 'fileServer'
+const bucketName = 'fileSystem'
 const { connectionUri } = config.mongodb
 
-module.exports.write = async (fileName, fileStream) => {
+module.exports.create = async () => {
     logger.info('Connecting to MongoDB [%s]', connectionUri)
     const client = new mongodb.MongoClient(connectionUri, { useNewUrlParser: true })
     await client.connect()
@@ -16,43 +14,39 @@ module.exports.write = async (fileName, fileStream) => {
     const db = client.db(dbName)
     const bucket = new mongodb.GridFSBucket(db, {
         chunkSizeBytes: 1024,
-        bucketName: 'files',
+        bucketName,
     })
 
-    logger.info('Writing file [%s] to [%s]', dbName, fileName)
+    return {
+        formatFileSystem: async () => {
+            logger.debug('Removing all documents from [%s.%s]', dbName, bucketName)
+            await bucket.drop()
+        },
+        createUploadStream: async (filename) => {
+            logger.debug('Uploading file [%s] to [%s.%s]', filename, dbName, bucketName)
 
-    const writeStream = bucket.openUploadStream(fileName)
-        .on('error', (error) => {
-            logger.error('Error writing file [%s]', fileName)
-            assert.ifError(error)
-        })
-        .on('finish', () => {
-            logger.error('Completed writing file [%s]', fileName)
-        })
+            return bucket.openUploadStream(filename)
+                .on('error', (error) => {
+                    logger.error('Error uploading file [%s]', filename)
+                    assert.ifError(error)
+                })
+                .on('finish', () => {
+                    logger.info('Completed uploading file [%s]', filename)
+                })
+        },
+        createDownloadStream: async (filename) => {
+            logger.debug('Reading file [%s] to [%s]', dbName, filename)
 
-    fileStream.pipe(writeStream)
-}
-
-module.exports.read = async (fileName) => {
-    logger.info('Connecting to MongoDB [%s]', connectionUri)
-    const client = new mongodb.MongoClient(connectionUri, { useNewUrlParser: true })
-    await client.connect()
-
-    const db = client.db(dbName)
-    const bucket = new mongodb.GridFSBucket(db, {
-        chunkSizeBytes: 1024,
-        bucketName: 'files',
-    })
-
-    logger.info('Reading file [%s] to [%s]', dbName, fileName)
-    const readStream = bucket.openDownloadStreamByName('meistersinger.mp3')
-        .on('error', (error) => {
-            logger.error('Error reading file [%s]', fileName)
-            assert.ifError(error)
-        })
-        .on('finish', () => {
-            logger.error('Completed reading file [%s]', fileName)
-        })
-
-    return readStream
+            const cursor = await bucket.find({ filename })
+            const [file] = await cursor.toArray()
+            return await bucket.openDownloadStream(file._id)
+                .on('error', (error) => {
+                    logger.error('Error uploading file [%s]', filename)
+                    assert.ifError(error)
+                })
+                .on('finish', () => {
+                    logger.info('Completed uploading file [%s]', filename)
+                })
+        },
+    }
 }

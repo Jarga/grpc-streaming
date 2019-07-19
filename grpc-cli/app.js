@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+process.on('unhandledRejection', error => {
+    console.log('Unhandled Promise Rejection =>', error)
+})
+
+process.on('uncaughtException', error => {
+    console.log('Unhandled Error =>', error)
+})
+
 const ArgumentParser = require('argparse').ArgumentParser
 const parser = new ArgumentParser({
     version: '0.0.1',
@@ -9,33 +17,51 @@ const parser = new ArgumentParser({
 })
 
 const subparsers = parser.addSubparsers()
-const fileServer = subparsers.addParser('fileServer', { addHelp: true })
+const fileServer = subparsers.addParser('fileserver', { addHelp: true })
 const client = require('./clients/fileServerClient')
 
 fileServer.addArgument(
-    ['-r', '--read'],
+    ['-u', '--upload'],
     {
-        help: 'Read a file from the file server',
+        help: 'Upload a file to the file server',
     }
 )
 
 fileServer.addArgument(
-    ['-w', '--write'],
+    ['-d', '--download'],
     {
-        help: 'Write a file to the file server',
+        help: 'Download a file from the file server',
+    }
+)
+
+fileServer.addArgument(
+    ['-f', '--format'],
+    {
+        help: 'Formats the file server (Deletes all files)',
+        action: 'storeTrue',
     }
 )
 
 const args = parser.parseArgs()
-
-if (args.write) {
-    client.write(args.write).then(() => {
-        console.log(`Wrote file [${args.write}] to server!`)
+Promise.resolve()
+    .then(async () => {
+        if (args.format) {
+            await client.formatFileSystem()
+            console.log('Formatted file system!')
+        }
+    })
+    .then(async () => {
+        if (args.upload) {
+            await client.upload(args.upload)
+            console.log(`Uploaded file [${args.upload}] to server!`)
+        }
+    })
+    .then(async () => {
+        if (args.download) {
+            await client.download(args.download)
+            console.log(`Downloaded file [${args.download}] from server!`)
+        }
+    })
+    .then(() => {
         process.exit(0)
     })
-} else if (args.read) {
-    client.read(args.read).then(() => {
-        console.log(`Read file [${args.write}] from server!`)
-        process.exit(0)
-    })
-}
