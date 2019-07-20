@@ -17,19 +17,21 @@ pipeline {
     //Use credentials plugin instead of this
     NPM_USR = 'admin'
     NPM_PSW = 'admin'
+    NPM_EMAIL = 'sean.j.mcadams@gmail.com'
   }
   stages {
     stage('prepare') {
       steps {
         sh 'cp ./grpc-file-server/protos/files.proto ./grpc-file-server/build/proto-npm'
+        sh "npm install -g npm-cli-login"
       }
     }
     stage('publish') {
       steps {
         dir('./grpc-file-server/build/proto-npm') {
           sh "npm version --new-version ${PKG_VER} --no-git-tag-version"
-          sh "npm config set ${NPM_USR} ${NPM_PSW}"
-          sh "npm publish --non-interactive --verbose"
+          sh "npm-cli-login -u ${NPM_USR} -p ${NPM_PSW} -r ${NPM_SRV} -e ${NPM_EMAIL}"
+          sh "npm publish --registry ${NPM_SRV} --non-interactive --verbose"
         }
       }
     }

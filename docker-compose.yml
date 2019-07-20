@@ -21,7 +21,24 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
   npm-local:
     image: verdaccio/verdaccio:4.1.0
+    restart: always
     ports:
       - "4873:4873"
     volumes:
-      - ./npm_data:/verdaccio/storage
+      - npm-storage:/verdaccio
+  nuget-local:
+    image: idoop/docker-nuget-server:latest
+    restart: always
+    ports:
+      - "80:8000"
+    environment:
+      NUGET_API_KEY: "ea21e0d40b724c33a94580b832e6d0ca"
+    volumes:
+      - nuget-db:/var/www/simple-nuget-server/db
+      - nuget-packagefiles:/var/www/simple-nuget-server/packagefiles
+      - nuget-nginx:/etc/nginx
+volumes:
+  npm-storage:
+  nuget-db:
+  nuget-packagefiles:
+  nuget-nginx:
