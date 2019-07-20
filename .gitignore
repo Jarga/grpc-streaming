@@ -9,7 +9,4 @@
 
 data/
 
-/jenkins_data/*
-!/jenkins_data/jobs
-/jenkins_data/jobs/**/branches
-/jenkins_data/jobs/**/indexing
+/jenkins_data/
