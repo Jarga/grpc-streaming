@@ -1,24 +1,35 @@
+def npm_ip;
+
+node {
+  npm_ip = sh(returnStdout: true, script: "getent hosts npm-local | cut -d ' ' -f1").trim()
+}
+
 pipeline {
   agent {
     docker {
       image 'node:12-alpine'
+      args "--network host --add-host=npm-local:${npm_ip}"
     }
-  }
+  }  
   environment {
     PKG_VER = "${env.TAG_NAME}"
+    NPM_SRV = "http://npm-local:4873"
+    //Use credentials plugin instead of this
+    NPM_USR = 'admin'
+    NPM_PSW = 'admin'
   }
   stages {
     stage('prepare') {
       steps {
-        sh 'cp ./proto/files.proto ./build/proto-npm'
+        sh 'cp ./grpc-file-server/protos/files.proto ./grpc-file-server/build/proto-npm'
       }
     }
     stage('publish') {
       steps {
-        dir('./build/proto-npm') {
+        dir('./grpc-file-server/build/proto-npm') {
           sh "npm version --new-version ${PKG_VER} --no-git-tag-version"
-          sh 'npm adduser --registry http://npm-local:4873'
-          sh 'npm publish --registry http://npm-local:4873'
+          sh "npm config set ${NPM_USR} ${NPM_PSW}"
+          sh "npm publish --non-interactive --verbose"
         }
       }
     }
