@@ -1,0 +1,36 @@
+def nuget_ip;
+
+node {
+  nuget_ip = sh(returnStdout: true, script: "getent hosts nuget-local | cut -d ' ' -f1").trim()
+}
+
+pipeline {
+  agent {
+    docker {
+      image 'mcr.microsoft.com/dotnet/core/sdk:3.0-alpine3.9'
+      args "--network host --add-host=nuget-local:${nuget_ip}"
+    }
+  }  
+  environment {
+    PKG_VER = "${env.TAG_NAME}"
+    NUGET_SRV = "http://nuget-local:4873"
+    //Use credentials plugin instead of this
+    NUGET_API_KEY = 'ea21e0d40b724c33a94580b832e6d0ca'
+  }
+  stages {
+    stage('prepare') {
+      steps {
+        sh 'cp ./grpc-file-server/protos/files.proto ./grpc-file-server/build/proto-nuget'
+      }
+    }
+    stage('publish') {
+      steps {
+        dir('./grpc-file-server/build/proto-nuget') {
+          sh "dotnet pack -o ./build --include-symbols --include-source -v n -c Release /p:Version=${PKG_VER}"
+          sh "npm-cli-login -u ${NPM_USR} -p ${NPM_PSW} -r ${NPM_SRV} -e ${NPM_EMAIL}"
+          sh "dotnet nuget push -s ${NUGET_SRV} -k ${NUGET_API_KEY} ./build/*.symbols.nupkg"
+        }
+      }
+    }
+  }
+}

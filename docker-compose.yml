@@ -30,9 +30,11 @@ services:
     image: idoop/docker-nuget-server:latest
     restart: always
     ports:
-      - "80:8000"
+      - "8000:8000"
     environment:
       NUGET_API_KEY: "ea21e0d40b724c33a94580b832e6d0ca"
+      SERVER_PORT: "8000"
+      SERVER_NAME: "nuget-local"
     volumes:
       - nuget-db:/var/www/simple-nuget-server/db
       - nuget-packagefiles:/var/www/simple-nuget-server/packagefiles
