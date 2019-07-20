@@ -13,7 +13,7 @@ pipeline {
   }  
   environment {
     PKG_VER = "${env.TAG_NAME}"
-    NUGET_SRV = "http://nuget-local:4873"
+    NUGET_SRV = "http://nuget-local:8000"
     //Use credentials plugin instead of this
     NUGET_API_KEY = 'ea21e0d40b724c33a94580b832e6d0ca'
   }
@@ -21,13 +21,15 @@ pipeline {
     stage('prepare') {
       steps {
         sh 'cp ./grpc-file-server/protos/files.proto ./grpc-file-server/build/proto-nuget'
+        sh 'apk update && apk --no-cache add libc6-compat && apk --no-cache add protobuf && ln -s /lib/libc.musl-x86_64.so.1 /lib/ld-linux-x86-64.so.2'
       }
     }
     stage('publish') {
       steps {
         dir('./grpc-file-server/build/proto-nuget') {
+          sh 'dotnet restore'
+          sh 'cd /root/.nuget/packages/grpc.tools/*/tools/linux_x64 && rm protoc && ln -s /usr/bin/protoc protoc && chmod +x grpc_csharp_plugin'
           sh "dotnet pack -o ./build --include-symbols --include-source -v n -c Release /p:Version=${PKG_VER}"
-          sh "npm-cli-login -u ${NPM_USR} -p ${NPM_PSW} -r ${NPM_SRV} -e ${NPM_EMAIL}"
           sh "dotnet nuget push -s ${NUGET_SRV} -k ${NUGET_API_KEY} ./build/*.symbols.nupkg"
         }
       }

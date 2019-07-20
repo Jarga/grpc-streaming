@@ -1,5 +1,6 @@
 ﻿using Grpc.Net.Client;
 using grpc_chat_server;
+using grpc_file_server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +23,7 @@ namespace grpc_chat_client
             var videoId = "TEST";
             var userId = DateTime.Now.Ticks.ToString();
 
+            var fileServer = GrpcClient.Create<FileServer.FileServerClient>(httpClient);
             var responseStream = client.join(new JoinRequest { VideoId = videoId, UserId = userId }).ResponseStream;
             
             var processTimer = new Stopwatch();
