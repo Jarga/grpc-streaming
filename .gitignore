@@ -10,3 +10,4 @@
 data/
 
 /jenkins_data/
+/**/build/**/*.proto
