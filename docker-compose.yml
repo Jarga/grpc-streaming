@@ -6,3 +6,41 @@ services:
       - ./data/mongo:/data/db
     ports: 
       - 27017:27017
+  jenkins:
+    image: jenkinsci/blueocean
+    environment:
+      - DOCKER_HOST=tcp://host.docker.internal:2375
+    user: root
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_data:/var/jenkins_home
+      - ./home:/home
+      - /var/run/docker.sock:/var/run/docker.sock
+  npm-local:
+    image: verdaccio/verdaccio:4.1.0
+    restart: always
+    ports:
+      - "4873:4873"
+    volumes:
+      - npm-storage:/verdaccio
+  nuget-local:
+    image: loicsharma/baget:latest
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      ASPNETCORE_URLS: "http://::8000"
+      ApiKey: "ea21e0d40b724c33a94580b832e6d0ca"
+      Storage__Type: FileSystem
+      Storage__Path: /var/baget/packages
+      Database__Type: Sqlite
+      Database__ConnectionString: Data Source=/var/baget/baget.db
+      Search__Type: Database
+    volumes:
+      - nuget-storage:/var/baget
+volumes:
+  npm-storage:
+  nuget-storage:

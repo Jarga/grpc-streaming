@@ -1,0 +1,39 @@
+def npm_ip;
+
+node {
+  npm_ip = sh(returnStdout: true, script: "getent hosts npm-local | cut -d ' ' -f1").trim()
+}
+
+pipeline {
+  agent {
+    docker {
+      image 'node:12-alpine'
+      args "--network host --add-host=npm-local:${npm_ip}"
+    }
+  }  
+  environment {
+    PKG_VER = "${env.TAG_NAME}"
+    NPM_SRV = "http://npm-local:4873"
+    //Use credentials plugin instead of this
+    NPM_USR = 'admin'
+    NPM_PSW = 'admin'
+    NPM_EMAIL = 'sean.j.mcadams@gmail.com'
+  }
+  stages {
+    stage('prepare') {
+      steps {
+        sh 'cp ./grpc-file-server/protos/files.proto ./grpc-file-server/build/proto-npm'
+        sh "npm install -g npm-cli-login"
+      }
+    }
+    stage('publish') {
+      steps {
+        dir('./grpc-file-server/build/proto-npm') {
+          sh "npm version --new-version ${PKG_VER} --no-git-tag-version"
+          sh "npm-cli-login -u ${NPM_USR} -p ${NPM_PSW} -r ${NPM_SRV} -e ${NPM_EMAIL}"
+          sh "npm publish --registry ${NPM_SRV} --non-interactive --verbose"
+        }
+      }
+    }
+  }
+}
