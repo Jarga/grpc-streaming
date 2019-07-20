@@ -1,6 +1,11 @@
 # grpc-streaming
 
+To Setup local nuget/npm:
 
+1) Add two entries in you hosts file (Windows: C:\Windows\System32\drivers\etc\hosts, Linux: /etc/hosts):
+    127.0.0.1 npm-local
+    127.0.0.1 nuget-local
+2) docker-compose up -d
 
 To setup Jenkins:
 
@@ -28,8 +33,5 @@ To setup Jenkins:
 17) Click "Scan Repository Now" (This should pick up all tags available)
 18) Refresh the job view and then go to the "Tags" tab, all tags should be listed.
 19) Build the tag you want (Only tags > 1.0.0-v5 work)
-20) Add two entries in you hosts file (Windows: C:\Windows\System32\drivers\etc\hosts, Linux: /etc/hosts):
-    127.0.0.1 npm-local
-    127.0.0.1 nuget-local
 21) Go to http://nuget-local:8000/ to see nuget packages
 22) Go to http://npm-local:4873/ to see npm packages
