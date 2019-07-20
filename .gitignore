@@ -10,7 +10,6 @@
 data/
 
 /jenkins_data/*
-!/jenkins_data/config.xml
 !/jenkins_data/jobs
 /jenkins_data/jobs/**/branches
 /jenkins_data/jobs/**/indexing
