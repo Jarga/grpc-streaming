@@ -1,38 +1,31 @@
-using System;
-using System.IO;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using Grpc.Core;
+using grpc_file_server;
 
 namespace grpc_video_server
 {
     public class VideoStreamService : VideoStream.VideoStreamBase
     {
+        private readonly FileServer.FileServerClient client;
+
+        public VideoStreamService(FileServer.FileServerClient client)
+        {
+            this.client = client;
+        }
+
         public override async Task stream(StreamRequest request, IServerStreamWriter<VideoChunk> responseStream, ServerCallContext context)
         {
-            int length;
-            long dataToRead;
-
             // Open the file.
-            var fileStream = new FileStream(".\\Media\\adventure_time_bacon_pancakes_new_york_remix_frag.mp4", FileMode.Open, FileAccess.Read, FileShare.Read);
+            var result = client.download(new DownloadRequest {Id = request.VideoId});
+            var fileStream = result.ResponseStream;
 
-            // Total bytes to read:
-            dataToRead = fileStream.Length;
-            var buffer = new byte[Math.Min(10000, dataToRead)];
-
-            var startbyte = 0;
-            fileStream.Seek(startbyte, SeekOrigin.Begin);
-
-            while (dataToRead > 0)
+            while (await fileStream.MoveNext(context.CancellationToken))
             {
-                // Read the data in buffer.
-                length = fileStream.Read(buffer, 0, buffer.Length);
+                var chunk = fileStream.Current.Chunk;
 
-                await responseStream.WriteAsync(new VideoChunk {VideoId = request.VideoId, Chunk = ByteString.CopyFrom(buffer)});
+                // TODO: Transcode Chunk
 
-                dataToRead = dataToRead - buffer.Length;
-                buffer = new byte[Math.Min(buffer.Length, dataToRead)];
-                await Task.Delay(100);
+                await responseStream.WriteAsync(new VideoChunk {VideoId = request.VideoId, Chunk = chunk});
             }
         }
     }
