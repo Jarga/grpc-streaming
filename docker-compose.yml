@@ -6,6 +6,22 @@ services:
       - ./data/mongo:/data/db
     ports: 
       - 27017:27017
+  grpc-chat-sql:
+    ports:
+        - "1433:1433"
+    image: grpc-chat-sql
+    build: 
+      context: ./sql
+      dockerfile: "./grpc-chat/Dockerfile"
+    restart: on-failure
+    environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=grpcstreaming!Rul3s
+  bd-rebalancer-redis:
+    ports:
+        - "6379:6379"
+    image: redis:alpine
+    restart: on-failure
   jenkins:
     image: jenkinsci/blueocean
     user: root

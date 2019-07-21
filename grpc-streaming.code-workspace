@@ -26,6 +26,9 @@
 		},
 		{
 			"path": "grpc-cli"
+		},
+		{
+			"path": "sql"
 		}
 	],
 	"settings": {}
