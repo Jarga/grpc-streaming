@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "grpc-video", "grpc-video.sqlproj", "{4A354373-78E9-4F0E-9A3A-32860EDA22A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A354373-78E9-4F0E-9A3A-32860EDA22A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A354373-78E9-4F0E-9A3A-32860EDA22A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A354373-78E9-4F0E-9A3A-32860EDA22A6}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{4A354373-78E9-4F0E-9A3A-32860EDA22A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A354373-78E9-4F0E-9A3A-32860EDA22A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A354373-78E9-4F0E-9A3A-32860EDA22A6}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5E295339-AB6D-420E-B93E-46D4C2435BD0}
+	EndGlobalSection
+EndGlobal

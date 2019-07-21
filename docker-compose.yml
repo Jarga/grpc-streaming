@@ -17,6 +17,17 @@ services:
     environment:
         - ACCEPT_EULA=Y
         - MSSQL_SA_PASSWORD=grpcstreaming!Rul3s
+  grpc-video-sql:
+    ports:
+        - "1434:1433"
+    image: grpc-video-sql
+    build: 
+      context: ./sql
+      dockerfile: "./grpc-video/Dockerfile"
+    restart: on-failure
+    environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=grpcstreaming!Rul3s
   bd-rebalancer-redis:
     ports:
         - "6379:6379"
