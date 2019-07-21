@@ -8,8 +8,6 @@ services:
       - 27017:27017
   jenkins:
     image: jenkinsci/blueocean
-    environment:
-      - DOCKER_HOST=tcp://host.docker.internal:2375
     user: root
     ports:
       - "8080:8080"
