@@ -35,3 +35,9 @@ To setup Jenkins:
 19) Build the tag you want (Only tags > 1.0.0-v5 work)
 21) Go to http://nuget-local:8000/ to see nuget packages
 22) Go to http://npm-local:4873/ to see npm packages
+
+
+ADDITIONAL FOR WEB DEMO:
+
+1) You will need to upload the file adventure_time_bacon_pancakes_new_york_remix_frag.mp4 to mongo via the grpc-click
+2) Take the ID generated from mongo and insert it into the grpc-video Videos table (ExternalFileId column) with the Id "TEST"
