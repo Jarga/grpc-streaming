@@ -1,23 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
-    </PropertyGroup>
-    
-    <!-- TODO: Use Nuget Package -->
-    <ItemGroup>
-        <Protobuf Include="../grpc-file-server/protos/files.proto" GrpcServices="Client" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <Protobuf Include="Protos\video.proto" GrpcServices="Server" />
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Protobuf Include="Protos\video.proto" GrpcServices="Server" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Grpc.AspNetCore.Server" Version="0.1.22-pre1" />
-        <PackageReference Include="Grpc.Tools" Version="1.22.0" PrivateAssets="All" />
-        <PackageReference Include="Google.Protobuf" Version="3.9.0" />
-        <PackageReference Include="Grpc.Net.Client" Version="0.1.22-pre1" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.60.6" />
+    <PackageReference Include="files-proto" Version="1.0.1" />
+    <PackageReference Include="Grpc.AspNetCore.Server" Version="0.1.22-pre1" />
+    <PackageReference Include="Google.Protobuf" Version="3.8.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="0.1.22-pre1" />
+  </ItemGroup>
 
 </Project>

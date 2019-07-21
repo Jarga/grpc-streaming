@@ -1,23 +1,47 @@
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
+using Grpc.Net.Client;
 using grpc_file_server;
+using grpc_video_server.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace grpc_video_server
 {
     public class VideoStreamService : VideoStream.VideoStreamBase
     {
-        private readonly FileServer.FileServerClient client;
+        private readonly ILogger<VideoStreamService> _logger;
+        private readonly FileServer.FileServerClient _fileServerClient;
+        private readonly VideoRepository _repo;
 
-        public VideoStreamService(FileServer.FileServerClient client)
+        public VideoStreamService(ILogger<VideoStreamService> logger, FileServer.FileServerClient fileServerClient, VideoRepository repo) : base()
         {
-            this.client = client;
+            _logger = logger;
+            _fileServerClient = fileServerClient;
+            _repo = repo;
         }
 
         public override async Task stream(StreamRequest request, IServerStreamWriter<VideoChunk> responseStream, ServerCallContext context)
         {
-            // Open the file.
-            var result = client.download(new DownloadRequest {Id = request.VideoId});
-            var fileStream = result.ResponseStream;
+            var externalFileName = await _repo.FindExternalFileNameById(request.VideoId);
+
+            if(string.IsNullOrWhiteSpace(externalFileName))
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, "Video not found"));
+            }
+
+            var downloadRequest = new DownloadRequest
+            {
+                Filename = externalFileName,
+                Options = new FileOptions
+                {
+                    Start = 0
+                }
+            };
+
+            var remoteStream = _fileServerClient.download(downloadRequest);
+            var fileStream = remoteStream.ResponseStream;
 
             while (await fileStream.MoveNext(context.CancellationToken))
             {
@@ -25,7 +49,7 @@ namespace grpc_video_server
 
                 // TODO: Transcode Chunk
 
-                await responseStream.WriteAsync(new VideoChunk {VideoId = request.VideoId, Chunk = chunk});
+                await responseStream.WriteAsync(new VideoChunk { VideoId = request.VideoId, Chunk = chunk });
             }
         }
     }
