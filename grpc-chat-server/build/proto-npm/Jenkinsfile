@@ -22,13 +22,13 @@ pipeline {
   stages {
     stage('prepare') {
       steps {
-        sh 'cp ./grpc-file-server/protos/files.proto ./grpc-file-server/build/proto-npm'
+        sh 'cp ./grpc-chat-server/protos/chat.proto ./grpc-chat-server/build/proto-npm'
         sh "npm install -g npm-cli-login"
       }
     }
     stage('publish') {
       steps {
-        dir('./grpc-file-server/build/proto-npm') {
+        dir('./grpc-chat-server/build/proto-npm') {
           sh "npm version --new-version ${PKG_VER} --no-git-tag-version"
           sh "npm-cli-login -u ${NPM_USR} -p ${NPM_PSW} -r ${NPM_SRV} -e ${NPM_EMAIL}"
           sh "npm publish --registry ${NPM_SRV} --non-interactive --verbose"
