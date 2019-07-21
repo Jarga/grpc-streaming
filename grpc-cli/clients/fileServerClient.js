@@ -4,7 +4,7 @@ const options = grpc.credentials.createInsecure()
 const fs = require('fs')
 const { Transform, pipeline } = require('stream')
 const path = require('path')
-const client = new domain.FileServer('localhost:50051', options)
+const client = new domain.FileStream.FileServer('localhost:50051', options)
 const util = require('util')
 const pipelineAsync = util.promisify(pipeline)
 
@@ -41,11 +41,11 @@ module.exports.uploadFile = async (filePath) => {
     return await module.exports.uploadFromFileStream(filename, stream)
 }
 
-module.exports.downloadToFileStream = async (filename, writeStream) => {
-    if (!filename) throw new Error('filename is required!')
+module.exports.downloadToFileStream = async (id, writeStream) => {
+    if (!id) throw new Error('id is required!')
     if (!writeStream) throw new Error('writeStream is required!')
 
-    const call = client.download({ filename })
+    const call = client.download({ id })
 
     await pipelineAsync(
         call,
@@ -54,16 +54,16 @@ module.exports.downloadToFileStream = async (filename, writeStream) => {
     )
 }
 
-module.exports.downloadFile = async (filename, saveToPath) => {
-    if (!filename) throw new Error('filename is required!')
+module.exports.downloadFile = async (id, saveToPath) => {
+    if (!id) throw new Error('filename is required!')
     if (!saveToPath) throw new Error('saveToPath is required!')
 
-    const writeStream = fs.createWriteStream(saveToPath || filename)
-    return await module.exports.downloadToFileStream(filename, writeStream)
+    const writeStream = fs.createWriteStream(saveToPath || id)
+    return await module.exports.downloadToFileStream(id, writeStream)
 }
 
-module.exports.removeFile = (filename) => new Promise((res, rej) => {
-    client.removeFile({ filename }, (err) => {
+module.exports.removeFile = (id) => new Promise((res, rej) => {
+    client.removeFile({ id }, (err) => {
         if (err) rej(err)
         else res()
     })
@@ -84,18 +84,18 @@ module.exports.listFiles = (filter) => new Promise((res, rej) => {
     })
 })
 
-module.exports.getFileInfo = (filename) => new Promise((res, rej) => {
-    client.getFileInfo({ filename }, (err, results) => {
+module.exports.getFileInfo = (id) => new Promise((res, rej) => {
+    client.getFileInfo({ id }, (err, results) => {
         if (err) rej(err)
         else res(results.file)
     })
 })
 
-module.exports.printFileContent = async (filename) => {
-    if (!filename) throw new Error('filename is required!')
+module.exports.printFileContent = async (id) => {
+    if (!id) throw new Error('id is required!')
 
     const writeStream = createBytesToStdOutTransformStream()
-    return await module.exports.downloadToFileStream(filename, writeStream)
+    return await module.exports.downloadToFileStream(id, writeStream)
 }
 
 module.exports.printFiles = async (filter) => {

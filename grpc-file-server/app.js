@@ -27,5 +27,5 @@ filesServerRepoFactory.create()
         server.bind(bindAddress, grpc.ServerCredentials.createInsecure())
         server.start()
 
-        logger.debug('File Server Service Running')
+        logger.info('File Server Service Running @ [%s]', bindAddress)
     })

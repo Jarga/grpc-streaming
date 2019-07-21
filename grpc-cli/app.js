@@ -32,6 +32,14 @@ const round = (value, decimals = 2) =>
 
 const bytesToMb = (bytes) => bytes / 1024.0 / 1024.0
 
+
+fileServer.addArgument(
+    ['-i', '--info'],
+    {
+        help: 'Gets all file information from the server for the provided file id.',
+    }
+)
+
 fileServer.addArgument(
     ['-l', '--listFiles'],
     {
@@ -50,21 +58,21 @@ fileServer.addArgument(
 fileServer.addArgument(
     ['-d', '--download'],
     {
-        help: 'Download a file from the file server',
+        help: 'Download a file with the provided id from the file server',
     }
 )
 
 fileServer.addArgument(
     ['-r', '--remove'],
     {
-        help: 'Remove a file from the file server',
+        help: 'Remove a file by the provided id from the file server',
     }
 )
 
 fileServer.addArgument(
     ['-c', '--cat'],
     {
-        help: 'Concatenates a file from the file server to stdout',
+        help: 'Concatenates a file with the provided id from the file server to stdout',
     }
 )
 
@@ -83,7 +91,10 @@ const bar = new cliProgress.Bar({
 
 Promise.resolve()
     .then(async () => {
-        if (args.format) {
+        if (args.info) {
+            const file = await client.getFileInfo(args.info)
+            console.dir(file)
+        } else if (args.format) {
             await client.formatFileSystem()
             console.log('Formatted file system!')
         } else if (args.remove) {
@@ -94,8 +105,8 @@ Promise.resolve()
             const totalMb = bytesToMb(file.length)
             bar.start(file.length, 0, { speed: 'N/A', totalMb: round(totalMb, 2), valueMb: 0 })
 
-            const filename = path.basename(args.download)
-            const writeStream = fs.createWriteStream(args.download)
+            const id = path.basename(args.download)
+            const writeStream = fs.createWriteStream(file.filename)
             const voyeur = createVoyeurStream()
 
             let startTime = new Date()
@@ -108,7 +119,7 @@ Promise.resolve()
             })
 
             voyeur.pipe(writeStream)
-            await client.downloadToFileStream(filename, voyeur)
+            await client.downloadToFileStream(id, voyeur)
             bar.update(file.length)
             bar.stop()
 
@@ -116,16 +127,13 @@ Promise.resolve()
             console.dir(file)
         } else if (args.cat) {
             await client.printFileContent(args.cat)
-        }
-    })
-    .then(async () => {
-        if (args.upload) {
+        } else if (args.upload) {
             const stats = fs.statSync(args.upload)
             const totalMb = bytesToMb(stats.size)
             bar.start(stats.size, 0, { speed: 'N/A', totalMb: round(totalMb, 2), valueMb: 0 })
 
             const readStream = fs.createReadStream(args.upload)
-            
+
             let startTime = new Date()
             let valueMb = 0
             readStream.on('data', (bytes) => {
@@ -141,10 +149,7 @@ Promise.resolve()
 
             console.log('Uploaded file to server!')
             console.dir(file)
-        }
-    })
-    .then(async () => {
-        if (args.listFiles) {
+        } else if (args.listFiles) {
             await client.printFiles(args.listFiles)
         }
     })

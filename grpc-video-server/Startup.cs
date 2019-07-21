@@ -1,6 +1,4 @@
-﻿using grpc_file_server;
-using grpc_video_server.Repositories;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,12 +42,7 @@ namespace grpc_video_server
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                // Communication with gRPC endpoints must be made through a gRPC client.
-                // To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909
-                endpoints.MapGrpcService<VideoStreamService>();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapGrpcService<VideoStreamService>());
         }
     }
 }
