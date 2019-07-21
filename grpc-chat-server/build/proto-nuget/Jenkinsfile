@@ -20,7 +20,7 @@ pipeline {
   stages {
     stage('prepare') {
       steps {
-        sh 'cp ./grpc-chat-server/Protos/chat.proto ./grpc-file-server/build/proto-nuget'
+        sh 'cp ./grpc-chat-server/Protos/chat.proto ./grpc-chat-server/build/proto-nuget'
         sh 'apk update && apk --no-cache add libc6-compat && apk --no-cache add protobuf && ln -s /lib/libc.musl-x86_64.so.1 /lib/ld-linux-x86-64.so.2'
       }
     }
