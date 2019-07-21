@@ -4,6 +4,7 @@ const mongodb = require('mongodb')
 const dbName = 'fileServer'
 const bucketName = 'fileSystem'
 const { connectionUri, gridFsBucketSize } = config.mongodb
+const { ObjectID } = mongodb
 
 module.exports.create = async () => {
     logger.info('Connecting to MongoDB [%s]', connectionUri)
@@ -23,9 +24,9 @@ module.exports.create = async () => {
     })
 
     return {
-        getFileInfo: async (filter) => {
-            logger.debug('Getting file info from [%s.%s] by [%o]', dbName, bucketName, filter)
-            const cursor = await bucket.find(filter, { limit: 1 })
+        getFileInfo: async (id) => {
+            logger.debug('Getting file info from [%s.%s] by [%s]', dbName, bucketName, id)
+            const cursor = await bucket.find({ _id: ObjectID(id) }, { limit: 1 })
             const [file] = await cursor.toArray()
             if (!file) {
                 const err = new Error('File not found')
@@ -33,15 +34,12 @@ module.exports.create = async () => {
                 throw err
             }
 
-            return file
+            const { _id, ...rest } = file
+            return { id: _id, ...rest }
         },
-        removeFile: async (filter) => {
-            logger.debug('Deleting from [%s.%s] by [%o] ', dbName, bucketName, filter)
-            const cursor = await bucket.find(filter, { limit: 1 })
-            const files = await cursor.toArray()
-            for (const file of files) {
-                await bucket.delete(file._id)
-            }
+        removeFile: async (id) => {
+            logger.debug('Deleting from [%s.%s] by [%s] ', dbName, bucketName, id)
+            await bucket.delete(ObjectID(id))
         },
         listFiles: async (filter = {}) => {
             logger.debug('Listing all documents from [%s.%s] using filter [%o]', dbName, bucketName, filter)
@@ -61,9 +59,9 @@ module.exports.create = async () => {
             logger.debug('Uploading file [%s] to [%s.%s]', filename, dbName, bucketName)
             return bucket.openUploadStream(filename)
         },
-        createDownloadStream: async (filename, options) => {
-            logger.debug('Reading file [%s] to [%s]', dbName, filename)
-            return await bucket.openDownloadStreamByName(filename, options)
+        createDownloadStream: async (id, options) => {
+            logger.debug('Downloading file [%s] from [%s.%s]', id, dbName, bucketName)
+            return await bucket.openDownloadStream(ObjectID(id), options)
         },
     }
 }

@@ -6,13 +6,13 @@ const pipelineAsync = util.promisify(pipeline)
 const { status } = require('grpc')
 
 module.exports.create = async ({ fileServerRepo }) => ({
-    service: domain.FileServer.service,
+    service: domain.FileStream.FileServer.service,
     implementation: {
         getFileInfo: async (call, callback) => {
             try {
                 logger.debug('Received file info request from RPC client')
-                const { filename } = call.request
-                const file = await fileServerRepo.getFileInfo({ filename })
+                const { id } = call.request
+                const file = await fileServerRepo.getFileInfo(id)
                 callback(null, { file })
             } catch (error) {
                 logger.error('Error getting file info => ', error)
@@ -22,8 +22,8 @@ module.exports.create = async ({ fileServerRepo }) => ({
         removeFile: async (call, callback) => {
             try {
                 logger.debug('Received remove file request from RPC client')
-                const { filename } = call.request
-                await fileServerRepo.removeFile({ filename })
+                const { id } = call.request
+                await fileServerRepo.removeFile(id)
                 callback(null)
             } catch (error) {
                 logger.error('Error removing file => ', error)
@@ -76,7 +76,7 @@ module.exports.create = async ({ fileServerRepo }) => ({
                     writeStream,
                 )
 
-                const file = await fileServerRepo.getFileInfo({ _id: writeStream.id })
+                const file = await fileServerRepo.getFileInfo(writeStream.id)
                 callback(null, { file })
             } catch (error) {
                 call.destroy(errorToStatus(error))
@@ -87,11 +87,11 @@ module.exports.create = async ({ fileServerRepo }) => ({
             logger.info('Received download request from RPC client')
 
             try {
-                const { filename, options } = call.request
-                const readStream = await fileServerRepo.createDownloadStream(filename, options)
+                const { id, options } = call.request
+                const readStream = await fileServerRepo.createDownloadStream(id, options)
                 await pipelineAsync(
                     readStream,
-                    createBytesToMessageTransformStream(filename),
+                    createBytesToMessageTransformStream(id),
                     call,
                 )
             } catch (error) {
@@ -109,10 +109,10 @@ const createMessageToBytesTransformStream = () => new Transform({
     },
 })
 
-const createBytesToMessageTransformStream = (filename) => new Transform({
+const createBytesToMessageTransformStream = (id) => new Transform({
     objectMode: true,
     transform: (bytes, _, done) => {
-        done(null, { filename, chunk: bytes })
+        done(null, { id, chunk: bytes })
     },
 })
 

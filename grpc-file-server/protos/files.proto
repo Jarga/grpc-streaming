@@ -2,9 +2,11 @@ syntax = "proto3";
 
 option csharp_namespace = "grpc_file_server";
 
+package FileStream;
+
 // Common
 message File {
-  string _id = 1;
+  string id = 1;
   int64 length = 2;
   string uploadDate = 3;
   string filename = 5;
@@ -12,7 +14,7 @@ message File {
 }
 
 // Get File Info
-message FileInfoRequest { string filename = 1; }
+message FileInfoRequest { string id = 1; }
 
 message FileInfoResult { File file = 1; }
 
@@ -28,12 +30,12 @@ message FileOptions {
 }
 
 message DownloadRequest {
-  string filename = 1;
+  string id = 1;
   FileOptions options = 2;
 }
 
 message DownloadResult {
-  string filename = 1;
+  string id = 1;
   bytes chunk = 2;
 }
 
@@ -50,16 +52,16 @@ message FormatRequest {}
 
 message FormatResult {}
 
-// Delete
-message DeleteRequest { string filename = 1; }
+// Remove
+message RemoveRequest { string id = 1; }
 
-message DeleteResult {}
+message RemoveResult {}
 
 // Services
 service FileServer {
   rpc getFileInfo(FileInfoRequest) returns (FileInfoResult) {}
 
-  rpc removeFile(DeleteRequest) returns (DeleteResult) {}
+  rpc removeFile(RemoveRequest) returns (RemoveResult) {}
 
   rpc listFiles(ListFilesRequest) returns (ListFilesResult) {}
 
