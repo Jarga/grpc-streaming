@@ -1,6 +1,7 @@
 {
     "mongodb": {
-        "connectionUri": "mongodb://localhost:27017/fileServer"
+        "connectionUri": "mongodb://localhost:27017/fileServer",
+        "gridFsBucketSize": 15360
     },
     "hosting": {
         "bindAddress": "0.0.0.0:50051"

@@ -1,9 +1,9 @@
 version: '3.7'
 services:
   mongo:
-    image: mongo:4.2.0-rc2-bionic
-    volumes:
-      - ./data/mongo:/data/db
+    image: mongo
+    # volumes:
+    #   - ./data/mongo:/data/db
     ports: 
       - 27017:27017
   jenkins:

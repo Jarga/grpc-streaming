@@ -8,10 +8,12 @@ const path = require('path')
 
 process.on('unhandledRejection', error => {
     console.log('Unhandled Promise Rejection =>', error)
+    process.exit(0)
 })
 
 process.on('uncaughtException', error => {
     console.log('Unhandled Error =>', error)
+    process.exit(0)
 })
 
 
@@ -25,6 +27,10 @@ const parser = new ArgumentParser({
 const subparsers = parser.addSubparsers()
 const fileServer = subparsers.addParser('fileserver', { addHelp: true })
 
+const round = (value, decimals = 2) =>
+    Number(Math.round(value + 'e' + decimals) + 'e-' + decimals)
+
+const bytesToMb = (bytes) => bytes / 1024.0 / 1024.0
 
 fileServer.addArgument(
     ['-l', '--listFiles'],
@@ -71,7 +77,9 @@ fileServer.addArgument(
 )
 
 const args = parser.parseArgs()
-const bar = new cliProgress.Bar({}, cliProgress.Presets.shades_classic)
+const bar = new cliProgress.Bar({
+    format: '[{bar}] {percentage}% | ETA: {eta}s | {valueMb}/{totalMb} MB | Speed: {speed} mbps',
+}, cliProgress.Presets.shades_grey)
 
 Promise.resolve()
     .then(async () => {
@@ -83,13 +91,20 @@ Promise.resolve()
             console.log('Removed file!')
         } else if (args.download) {
             const file = await client.getFileInfo(args.download)
-            bar.start(file.length, 0)
+            const totalMb = bytesToMb(file.length)
+            bar.start(file.length, 0, { speed: 'N/A', totalMb: round(totalMb, 2), valueMb: 0 })
 
             const filename = path.basename(args.download)
             const writeStream = fs.createWriteStream(args.download)
             const voyeur = createVoyeurStream()
+
+            let startTime = new Date()
+            let valueMb = 0
             voyeur.on('data', (bytes) => {
-                bar.update(bar.value + bytes.length)
+                valueMb += bytesToMb(bytes.length)
+                const elapsedSec = (new Date() - startTime) / 1000.0
+                const speed = round((valueMb * 8) / elapsedSec)
+                bar.increment(bytes.length, { speed, valueMb: round(valueMb, 2) })
             })
 
             voyeur.pipe(writeStream)
@@ -106,16 +121,22 @@ Promise.resolve()
     .then(async () => {
         if (args.upload) {
             const stats = fs.statSync(args.upload)
-            bar.start(stats.size, 0)
+            const totalMb = bytesToMb(stats.size)
+            bar.start(stats.size, 0, { speed: 'N/A', totalMb: round(totalMb, 2), valueMb: 0 })
 
             const readStream = fs.createReadStream(args.upload)
+            
+            let startTime = new Date()
+            let valueMb = 0
             readStream.on('data', (bytes) => {
-                bar.update(bar.value + bytes.length)
+                valueMb += bytesToMb(bytes.length)
+                const elapsedSec = (new Date() - startTime) / 1000.0
+                const speed = round((valueMb * 8) / elapsedSec)
+                bar.increment(bytes.length, { speed, valueMb: round(valueMb, 2) })
             })
 
             const filename = path.basename(args.upload)
             const file = await client.uploadFromFileStream(filename, readStream)
-            bar.update(stats.size)
             bar.stop()
 
             console.log('Uploaded file to server!')
@@ -128,6 +149,11 @@ Promise.resolve()
         }
     })
     .then(() => {
+        process.exit(0)
+    })
+    .catch((err) => {
+        console.log('Error while executing command')
+        console.dir(err)
         process.exit(0)
     })
 

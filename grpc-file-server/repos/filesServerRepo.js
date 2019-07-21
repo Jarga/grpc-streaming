@@ -3,7 +3,7 @@ const config = require('config')
 const mongodb = require('mongodb')
 const dbName = 'fileServer'
 const bucketName = 'fileSystem'
-const { connectionUri } = config.mongodb
+const { connectionUri, gridFsBucketSize } = config.mongodb
 
 module.exports.create = async () => {
     logger.info('Connecting to MongoDB [%s]', connectionUri)
@@ -12,8 +12,14 @@ module.exports.create = async () => {
 
     const db = client.db(dbName)
     const bucket = new mongodb.GridFSBucket(db, {
-        chunkSizeBytes: 1024,
+        chunkSizeBytes: gridFsBucketSize,
         bucketName,
+    })
+
+    // Ensure we have valid indexes
+    db.collection(`${bucketName}.files`).createIndex({
+        'filename': 1,
+        'uploadDate': 1,
     })
 
     return {
