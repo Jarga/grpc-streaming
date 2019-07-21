@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using grpc_video_server.Repositories;
+using grpc_file_server;
 
 namespace grpc_video_server
 {

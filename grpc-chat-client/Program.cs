@@ -21,7 +21,6 @@ namespace grpc_chat_client
             var videoId = "TEST";
             var userId = DateTime.Now.Ticks.ToString();
 
-            //var fileServer = GrpcClient.Create<FileServer.FileServerClient>(httpClient);
             var responseStream = client.join(new JoinRequest { VideoId = videoId, UserId = userId }).ResponseStream;
             
             var processTimer = new Stopwatch();
