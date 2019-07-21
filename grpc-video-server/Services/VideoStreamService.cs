@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Grpc.Core;
@@ -20,9 +18,9 @@ namespace grpc_video_server
 
             // Total bytes to read:
             dataToRead = fileStream.Length;
-            byte[] buffer = new Byte[Math.Min(10000, dataToRead)];
+            var buffer = new byte[Math.Min(10000, dataToRead)];
 
-            int startbyte = 0;
+            var startbyte = 0;
             fileStream.Seek(startbyte, SeekOrigin.Begin);
 
             while (dataToRead > 0)
@@ -30,10 +28,10 @@ namespace grpc_video_server
                 // Read the data in buffer.
                 length = fileStream.Read(buffer, 0, buffer.Length);
 
-                await responseStream.WriteAsync(new VideoChunk { VideoId = request.VideoId, Chunk = ByteString.CopyFrom(buffer) });
+                await responseStream.WriteAsync(new VideoChunk {VideoId = request.VideoId, Chunk = ByteString.CopyFrom(buffer)});
 
                 dataToRead = dataToRead - buffer.Length;
-                buffer = new Byte[Math.Min(buffer.Length, dataToRead)];
+                buffer = new byte[Math.Min(buffer.Length, dataToRead)];
                 await Task.Delay(100);
             }
         }
