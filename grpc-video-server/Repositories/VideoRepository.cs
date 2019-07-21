@@ -20,20 +20,20 @@ namespace grpc_video_server.Repositories
             _sqlConnectionString = configuration.GetConnectionString("Sql");
         }
 
-        private class FileResult
+        public class FileResult
         {
             public string ExternalFileName { get; set; }
+            public string ExternalFileId { get; set; }
         } 
 
-        public async Task<string> FindExternalFileNameById(string videoId)
+        public async Task<FileResult> FindById(string videoId)
         {
             using (var conn = new SqlConnection(_sqlConnectionString))
             {
                 await conn.OpenAsync();
 
-                var sql = @"SELECT [ExternalFileName] FROM [dbo].[Videos] WHERE [Id] = @VideoId";
-                var results = await conn.QueryFirstAsync<FileResult>(sql, new { VideoId = videoId });
-                return results.ExternalFileName;
+                var sql = @"SELECT [ExternalFileName], [ExternalFileId] FROM [dbo].[Videos] WHERE [Id] = @VideoId";
+                return await conn.QueryFirstAsync<FileResult>(sql, new { VideoId = videoId });
             }
         }
     }

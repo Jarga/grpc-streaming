@@ -24,16 +24,16 @@ namespace grpc_video_server
 
         public override async Task stream(StreamRequest request, IServerStreamWriter<VideoChunk> responseStream, ServerCallContext context)
         {
-            var externalFileName = await _repo.FindExternalFileNameById(request.VideoId);
+            var findResult = await _repo.FindById(request.VideoId);
 
-            if(string.IsNullOrWhiteSpace(externalFileName))
+            if(findResult == null)
             {
                 throw new RpcException(new Status(StatusCode.NotFound, "Video not found"));
             }
 
             var downloadRequest = new DownloadRequest
             {
-                Filename = externalFileName,
+                Id = findResult.ExternalFileId,
                 Options = new FileOptions
                 {
                     Start = 0
