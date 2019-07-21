@@ -1,11 +1,9 @@
 ﻿using Grpc.Net.Client;
 using grpc_chat_server;
-using grpc_file_server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace grpc_chat_client
