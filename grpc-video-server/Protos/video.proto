@@ -6,11 +6,23 @@ package VideoStream;
 
 service VideoStream {
     rpc stream(StreamRequest) returns (stream VideoChunk){}
+    rpc streamRecords(RecordStreamRequest) returns (stream VideoRecord){}
 }
 
 message VideoChunk { 
 	string video_id = 1;
     bytes  chunk = 2;
+}
+
+message VideoRecord { 
+	string video_id = 1;
+    string file_name = 2;
+	string file_id = 3;
+}
+
+message RecordStreamRequest { 
+	int64 offset = 1;
+    int64 fetch = 2;
 }
 
 // The request message containing the user's name.

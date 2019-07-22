@@ -52,5 +52,12 @@ namespace grpc_video_server
                 await responseStream.WriteAsync(new VideoChunk { VideoId = request.VideoId, Chunk = chunk });
             }
         }
+
+        public override async Task streamRecords(RecordStreamRequest request, IServerStreamWriter<VideoRecord> responseStream, ServerCallContext context)
+        {
+            var offset = request.Offset > 0 ? (long?)request.Offset : null;
+            var fetch = request.Fetch > 0 ? (long?)request.Fetch : null;
+            await _repo.StreamVideoEntries(responseStream, offset, fetch);
+        }
     }
 }

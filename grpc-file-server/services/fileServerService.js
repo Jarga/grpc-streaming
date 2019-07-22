@@ -5,6 +5,8 @@ const util = require('util')
 const pipelineAsync = util.promisify(pipeline)
 const { status } = require('grpc')
 
+const messageBus = require('../messaging/messageBus').create()
+
 module.exports.create = async ({ fileServerRepo }) => ({
     service: domain.FileStream.FileServer.service,
     implementation: {
@@ -57,7 +59,7 @@ module.exports.create = async ({ fileServerRepo }) => ({
 
             try {
                 // Listen for incoming streaming data. The first request will have an empty chunk
-                const filename = await new Promise((res, rej) => {
+                const filenamePromise = await new Promise((res, rej) => {
                     call.on('error', (err) => {
                         rej(err)
                     })
@@ -69,7 +71,7 @@ module.exports.create = async ({ fileServerRepo }) => ({
                     })
                 })
 
-                const writeStream = await fileServerRepo.createUploadStream(filename)
+                const writeStream = await fileServerRepo.createUploadStream(filenamePromise)
                 await pipelineAsync(
                     call,
                     createMessageToBytesTransformStream(),
@@ -77,6 +79,10 @@ module.exports.create = async ({ fileServerRepo }) => ({
                 )
 
                 const file = await fileServerRepo.getFileInfo(writeStream.id)
+                const { chunkSize, filename, id, length, uploadDate, md5 } = file;
+                
+                await messageBus.publish('grpc_file_events', JSON.stringify({ chunkSize, filename, id, length, uploadDate, md5 }))
+
                 callback(null, { file })
             } catch (error) {
                 call.destroy(errorToStatus(error))
