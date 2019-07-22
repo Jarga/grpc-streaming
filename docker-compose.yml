@@ -28,7 +28,7 @@ services:
     environment:
         - ACCEPT_EULA=Y
         - MSSQL_SA_PASSWORD=grpcstreaming!Rul3s
-  bd-rebalancer-redis:
+  redis:
     ports:
         - "6379:6379"
     image: redis:alpine
