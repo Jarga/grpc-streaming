@@ -21,14 +21,17 @@ const app = express()
 const server = http.createServer(app)
 
 // register socket stuff
-stockets.register(server, logger)
+sockets.register(server, logger)
 
 // log requests
 app.use(logging.createReqLogger('request'))
 
-app.use(express.static(path.resolve(__dirname, './static/')))
-app.get('/', function(req, res) {
-  res.sendFile('index.html', { root: path.resolve(__dirname, './static/') })
+// app.use(express.static('static'))
+app.use(express.static('assets'))
+app.use(express.static('dist'))
+
+app.get('/*', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'views/index.html'))
 })
 
 // log errors in the pipeline

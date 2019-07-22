@@ -1,6 +1,6 @@
-const { format, transports } = require('winston')
+const winston = require('winston')
 const expressWinston = require('express-winston')
-const { colorize, combine, printf, splat, timestamp } = format
+const { colorize, combine, label, printf, splat, timestamp } = winston.format
 
 const formatter = printf(
   ({ label, level, message, timestamp }) => `${level}: [${label}] ${timestamp} - ${message}`
@@ -14,7 +14,7 @@ const createLoggingConfig = name => ({
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     formatter
   ),
-  transports: [new transports.Console()],
+  transports: [new winston.transports.Console()],
 })
 
 const createErrLogger = name => expressWinston.errorLogger(createLoggingConfig(name))
