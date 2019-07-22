@@ -2,8 +2,8 @@ version: '3.7'
 services:
   mongo:
     image: mongo
-    # volumes:
-    #   - ./data/mongo:/data/db
+    volumes:
+      - ./data/mongo:/data/db
     ports: 
       - 27017:27017
   grpc-chat-sql:
@@ -41,8 +41,8 @@ services:
       - "8443:8443"
       - "50000:50000"
     volumes:
-      - ./jenkins_data:/var/jenkins_home
-      - ./home:/home
+      - ./data/jenkins/jenkins_data:/var/jenkins_home
+      - ./data/jenkins/home:/home
       - /var/run/docker.sock:/var/run/docker.sock
   npm-local:
     image: verdaccio/verdaccio:4.1.0

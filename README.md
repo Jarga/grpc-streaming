@@ -25,8 +25,8 @@ To setup Jenkins:
     - Choose "Jarga" as the organization
     - Choose grpc-streaming as the repository
     - Click Create Pipeline
-12) Copy content of jobs folder at root(~) of project into the ./jenkins_data/jobs folder
-13) Delete the folder 'grpc-streaming' in ./jenkins_data/jobs
+12) Copy content of jobs folder at root(~) of project into the ./data/jenkins/jenkins_data/jobs folder
+13) Delete the folder 'grpc-streaming' in ./data/jenkins/jenkins_data/jobs
 14) Click "Administration" in the Jenkins blue ocean UI
 15) Click "Reload Configuration from Disk" and OK on the popup
 16) When jenkins reloads jobs should exist for the proto files, Click into any job
@@ -39,5 +39,5 @@ To setup Jenkins:
 
 ADDITIONAL FOR WEB DEMO:
 
-1) You will need to upload the file adventure_time_bacon_pancakes_new_york_remix_frag.mp4 to mongo via the grpc-click
+1) You will need to upload the file adventure_time_bacon_pancakes_new_york_remix_frag.mp4 to mongo via the grpc-cli
 2) Take the ID generated from mongo and insert it into the grpc-video Videos table (ExternalFileId column) with the Id "TEST"
