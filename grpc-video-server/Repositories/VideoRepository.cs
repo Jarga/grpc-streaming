@@ -50,7 +50,7 @@ namespace grpc_video_server.Repositories
             }
         }
 
-        //This should be IAsyncEnumerable<dynamic> but preview!
+        //This should be IAsyncEnumerable<dynamic> but preview libraries are annoying!
         public async Task StreamVideoEntries(IServerStreamWriter<VideoRecord> stream, long? offset, long? fetch)
         {
             using (var conn = new SqlConnection(_sqlConnectionString))

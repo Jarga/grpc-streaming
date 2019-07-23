@@ -1,0 +1,38 @@
+def nuget_ip;
+
+node {
+  nuget_ip = sh(returnStdout: true, script: "getent hosts nuget-local | cut -d ' ' -f1").trim()
+}
+
+pipeline {
+  agent {
+    docker {
+      image 'mcr.microsoft.com/dotnet/core/sdk:3.0-alpine3.9'
+      args "--network host --add-host=nuget-local:${nuget_ip}"
+    }
+  }  
+  environment {
+    PKG_VER = "${env.TAG_NAME}"
+    NUGET_SRV = "http://nuget-local:8000"
+    //Use credentials plugin instead of this
+    NUGET_API_KEY = 'ea21e0d40b724c33a94580b832e6d0ca'
+  }
+  stages {
+    stage('prepare') {
+      steps {
+        sh 'cp ./grpc-video-server/Protos/video.proto ./grpc-video-server/build/proto-nuget'
+        sh 'apk update && apk --no-cache add libc6-compat && apk --no-cache add protobuf && ln -s /lib/libc.musl-x86_64.so.1 /lib/ld-linux-x86-64.so.2'
+      }
+    }
+    stage('publish') {
+      steps {
+        dir('./grpc-video-server/build/proto-nuget') {
+          sh 'dotnet restore'
+          sh 'cd /root/.nuget/packages/grpc.tools/*/tools/linux_x64 && rm protoc && ln -s /usr/bin/protoc protoc && chmod +x grpc_csharp_plugin'
+          sh "dotnet pack -o ./build --include-symbols --include-source -v n -c Release /p:Version=${PKG_VER}"
+          sh "dotnet nuget push -s ${NUGET_SRV} -k ${NUGET_API_KEY} ./build/*.symbols.nupkg"
+        }
+      }
+    }
+  }
+}
