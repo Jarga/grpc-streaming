@@ -22,7 +22,7 @@ pipeline {
   stages {
     stage('prepare') {
       steps {
-        sh 'cp ./grpc-chat-server/protos/chat.proto ./grpc-chat-server/build/proto-npm'
+        sh 'cp ./grpc-chat-server/Protos/chat.proto ./grpc-chat-server/build/proto-npm'
         sh "npm install -g npm-cli-login"
       }
     }

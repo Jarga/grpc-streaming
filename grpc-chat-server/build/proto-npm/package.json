@@ -6,7 +6,7 @@
   "scripts": {
     "test": ""
   },
-  "files": [" chat.proto"],
+  "files": ["chat.proto"],
   "peerDependencies": {
     "@grpc/proto-loader": "^0.5.1",
     "grpc": "^1.22.2"
