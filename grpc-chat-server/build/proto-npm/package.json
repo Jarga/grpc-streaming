@@ -1,0 +1,16 @@
+{
+  "name": "chat-proto",
+  "version": "1.0.0",
+  "description": "Protobuf contracts for gRPC Chat Server",
+  "main": "",
+  "scripts": {
+    "test": ""
+  },
+  "files": [" chat.proto"],
+  "peerDependencies": {
+    "@grpc/proto-loader": "^0.5.1",
+    "grpc": "^1.22.2"
+  },
+  "author": "Sean McAdams",
+  "license": "MIT"
+}

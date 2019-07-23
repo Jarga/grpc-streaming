@@ -5,6 +5,10 @@
 			"name": "~"
 		},
 		{
+			"path": "./grpc-file-server",
+			"name": "grpc-file-server"
+		},
+		{
 			"path": "./grpc-chat-client",
 			"name": "grpc-chat-client"
 		},
@@ -21,8 +25,10 @@
 			"name": "web"
 		},
 		{
-			"path": "./docker",
-			"name": "docker"
+			"path": "grpc-cli"
+		},
+		{
+			"path": "sql"
 		}
 	],
 	"settings": {}

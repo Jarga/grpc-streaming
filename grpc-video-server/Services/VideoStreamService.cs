@@ -1,41 +1,63 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using Grpc.Core;
+using Grpc.Net.Client;
+using grpc_file_server;
+using grpc_video_server.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace grpc_video_server
 {
     public class VideoStreamService : VideoStream.VideoStreamBase
     {
+        private readonly ILogger<VideoStreamService> _logger;
+        private readonly FileServer.FileServerClient _fileServerClient;
+        private readonly VideoRepository _repo;
+
+        public VideoStreamService(ILogger<VideoStreamService> logger, FileServer.FileServerClient fileServerClient, VideoRepository repo) : base()
+        {
+            _logger = logger;
+            _fileServerClient = fileServerClient;
+            _repo = repo;
+        }
+
         public override async Task stream(StreamRequest request, IServerStreamWriter<VideoChunk> responseStream, ServerCallContext context)
         {
-            int length;
-            long dataToRead;
+            var findResult = await _repo.FindById(request.VideoId);
 
-            // Open the file.
-            var fileStream = new FileStream(".\\Media\\adventure_time_bacon_pancakes_new_york_remix_frag.mp4", FileMode.Open, FileAccess.Read, FileShare.Read);
-
-            // Total bytes to read:
-            dataToRead = fileStream.Length;
-            byte[] buffer = new Byte[Math.Min(10000, dataToRead)];
-
-            int startbyte = 0;
-            fileStream.Seek(startbyte, SeekOrigin.Begin);
-
-            while (dataToRead > 0)
+            if(findResult == null)
             {
-                // Read the data in buffer.
-                length = fileStream.Read(buffer, 0, buffer.Length);
-
-                await responseStream.WriteAsync(new VideoChunk { VideoId = request.VideoId, Chunk = ByteString.CopyFrom(buffer) });
-
-                dataToRead = dataToRead - buffer.Length;
-                buffer = new Byte[Math.Min(buffer.Length, dataToRead)];
-                await Task.Delay(100);
+                throw new RpcException(new Status(StatusCode.NotFound, "Video not found"));
             }
+
+            var downloadRequest = new DownloadRequest
+            {
+                Id = findResult.ExternalFileId,
+                Options = new FileOptions
+                {
+                    Start = 0
+                }
+            };
+
+            var remoteStream = _fileServerClient.download(downloadRequest);
+            var fileStream = remoteStream.ResponseStream;
+
+            while (await fileStream.MoveNext(context.CancellationToken))
+            {
+                var chunk = fileStream.Current.Chunk;
+
+                // TODO: Transcode Chunk
+
+                await responseStream.WriteAsync(new VideoChunk { VideoId = request.VideoId, Chunk = chunk });
+            }
+        }
+
+        public override async Task streamRecords(RecordStreamRequest request, IServerStreamWriter<VideoRecord> responseStream, ServerCallContext context)
+        {
+            var offset = request.Offset > 0 ? (long?)request.Offset : null;
+            var fetch = request.Fetch > 0 ? (long?)request.Fetch : null;
+            await _repo.StreamVideoEntries(responseStream, offset, fetch);
         }
     }
 }

@@ -1,0 +1,9 @@
+**/logs
+**/data.json
+**/bin/Debug
+**/bin/Release
+**/obj
+**/node_modules
+**/.vs
+**/*.dbmdl
+**/*.jfm
