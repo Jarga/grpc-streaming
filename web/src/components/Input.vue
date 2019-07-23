@@ -1,33 +1,39 @@
 <template>
-    <input
-        @input="$emit('input', $event.target.value)"
-        :value="text"
-        :class="cn"
-        placeholder="Send a message"
-    />
+  <input
+    @input="$emit('input', $event.target.value)"
+    :value="value"
+    :class="cn"
+    placeholder="Send a message"
+  />
 </template>
 
 <script>
 import { css } from 'emotion'
-import {
-    rightSidebarWidth,
-} from '../util'
+import { primaryColor, rightSidebarWidth } from '../util'
 
 const cn = css`
-    height: 3.5rem;
-    width: 100%;
-    line-height: 3.5rem;
-    border: .1rem solid #d8d8d8;
-    border-radius: .3rem;
+  height: 3.5rem;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.4rem 0.8rem;
+  line-height: 3.5rem;
+  border: 0.1rem solid #d8d8d8;
+  border-radius: 0.3rem;
+  outline: none;
+
+  &:focus {
+    box-shadow: 0 0 0.5rem ${primaryColor};
+  }
 `
 
 export default {
-    data () {
-        return {
-            cn,
-        };
-    },
-    props: ['text'],
-
+  data() {
+    return {
+      cn,
+    }
+  },
+  props: {
+    value: String,
+  },
 }
 </script>

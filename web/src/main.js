@@ -24,17 +24,15 @@ const app = new Vue({
   },
   computed: {
     ViewObject() {
-      if (this.currentRoute === '/') return nestedViews.list;
+      if (this.currentRoute === '/') return nestedViews.list
 
       const split = splitPath(this.currentRoute)
-      console.log(split);
       const key = Object.keys(nestedViews).find(v => v === split[0])
 
       return key && nestedViews[key]
     },
   },
   render(h) {
-    console.log(this.ViewObject)
     const vo = this.ViewObject
     const pathArr = splitPath(this.currentRoute)
 
