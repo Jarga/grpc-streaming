@@ -4,18 +4,36 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "test"
+    "build": "cross-env NODE_ENV=production npm run bundle:production",
+    "bundle:dev": "cross-env NODE_ENV=development webpack -w --progress",
+    "serve": "cross-env PORT=3000 node app.js",
+    "start": "npm i && npm run serve && npm run bundle:dev"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.1",
     "config": "^3.1.0",
+    "emotion": "^10.0.14",
     "express": "^4.17.1",
     "express-winston": "^3.2.1",
     "grpc": "^1.22.2",
     "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
     "socket.io-redis": "^5.2.0",
+    "vue": "^2.6.10",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.5.4",
+    "babel-loader": "^8.0.6",
+    "cross-env": "^5.2.0",
+    "prettier": "^1.18.2",
+    "vue-loader": "^15.7.0",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5"
   }
 }
