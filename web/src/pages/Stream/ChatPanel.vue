@@ -19,10 +19,10 @@
 
 <script>
 import { css } from 'emotion'
-import Button from './Button.vue'
+import Button from '@components/Button.vue'
+import Input from '@components/Input.vue'
 import ChatMessage from './ChatMessage.vue'
-import Input from './Input.vue'
-import { primaryColor, redColor, rightSidebarWidth } from '../util'
+import { primaryColor, redColor, rightSidebarWidth } from '../../util'
 
 const actionsCN = css`
   display: flex;
@@ -48,7 +48,7 @@ const listCN = css`
 const messagesCN = css`
   flex: 1;
   padding: 1rem 1rem 0;
-  overflow-y: auto;
+  overflow-y: scroll;
 `
 
 const cn = css`

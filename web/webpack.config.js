@@ -12,7 +12,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@shared': path.resolve(__dirname, 'src/shared'),
+      '@components': path.resolve(__dirname, 'src/components'),
       '@store': path.resolve(__dirname, 'src/store'),
       'vue$': 'vue/dist/vue.esm.js',
     },

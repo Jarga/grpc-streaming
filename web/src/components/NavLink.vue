@@ -6,25 +6,25 @@
 
 <script>
 import { css } from 'emotion'
-import { hoverPrimaryColor, primaryColor, secondaryColor } from '../util'
+import { hoverPrimaryColor, primaryColor } from '../util'
 
 const cn = css`
   display: flex;
   align-items: center;
   height: 100%;
   padding: 0 1.5rem;
-  border-bottom: 0.4rem solid ${primaryColor};
+  border-bottom: 0.3rem solid ${primaryColor};
   color: #fff;
   text-decoration: none;
   &:hover {
-    border-color: ${secondaryColor};
+    border-color: #fff;
     background-color: ${hoverPrimaryColor};
     cursor: pointer;
   }
 `
 
 const activeCN = css`
-  border-color: ${secondaryColor};
+  border-color: #fff;
 `
 
 export default {
