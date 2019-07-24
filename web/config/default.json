@@ -1,0 +1,4 @@
+{
+    "videoServerUrl": "localhost:5010",
+    "chatServerUrl": "localhost:5000"
+}

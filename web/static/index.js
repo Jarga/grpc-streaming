@@ -41,32 +41,19 @@
   }
 
   function initWS() {
-    var commentSocket = io('/comments', { transports: ['websocket'] })
-    var videoSocket = io('/stream', { transports: ['websocket'] })
+    var socket = io('/streams', { transports: ['websocket'], query: 'video_id=00D348BC-0B11-4AA1-82A4-6AE90EAF18F5&user_id=smcadams'})
     //new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/stream', 'echo-protocol');
     //ws.binaryType = "arraybuffer";
 
-    commentSocket.on('connect', () => {
-      console.info('Comments connected.')
+    socket.on('connect', () => {
+      console.info('Socket connected.')
     })
 
-    commentSocket.on('error', err => {
-      console.error('Comments error.', err)
+    socket.on('error', err => {
+      console.error('Socket error.', err)
     })
 
-    videoSocket.on('connect', () => {
-      console.info('Video connected.')
-    })
-
-    videoSocket.on('error', err => {
-      console.error('Video error.', err)
-    })
-
-    videoSocket.on('stream_end', () => {
-      mediaSource.endOfStream()
-    })
-
-    commentSocket.on('chunk', chunk => {
+    socket.on('comment_chunk', chunk => {
       //console.info('Got comment chunk.', chunk);
       var commentContainer = document.getElementById('comment-container')
       var para = document.createElement('p')
@@ -77,7 +64,11 @@
       commentContainer.appendChild(para)
     })
 
-    videoSocket.on('chunk', resp => {
+    socket.on('video_stream_end', () => {
+      mediaSource.endOfStream()
+    })
+
+    socket.on('video_chunk', resp => {
       console.info('Got video chunk.', resp)
       if (buffer.updating || queue.length > 0) {
         queue.push(resp.chunk)
@@ -86,23 +77,4 @@
       }
     })
   }
-
-  function playVideo() {
-    buffer = mediaSource.addSourceBuffer(
-      'video/mp4; codecs="avc1.4d001e,mp4a.40.5"'
-    )
-    buffer.mode = 'sequence'
-
-    if (queue.length > 0) {
-      buffer.appendBuffer(queue.shift())
-      buffer.onupdateend = e => {
-        buffer.appendBuffer(queue.shift())
-      }
-    }
-
-    //mediaSource.endOfStream();
-    video.play()
-  }
-
-  window.playVideo = playVideo
 })()

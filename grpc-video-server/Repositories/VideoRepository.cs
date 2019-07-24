@@ -68,10 +68,12 @@ namespace grpc_video_server.Repositories
 
                 foreach (var item in result)
                 {
+                    var itemAsDict = (IDictionary<string, object>)item;
+
                     await stream.WriteAsync(new VideoRecord {
-                        VideoId = item["Id"],
-                        FileName = item["ExternalFileName"],
-                        FileId = item["ExternalFileId"]
+                        VideoId = itemAsDict["Id"].ToString(),
+                        FileName = itemAsDict["ExternalFileName"].ToString(),
+                        FileId = itemAsDict["ExternalFileId"].ToString()
                     });
                 }
             }
