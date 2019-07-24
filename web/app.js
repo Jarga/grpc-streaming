@@ -42,8 +42,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(logging.createReqLogger('request'))
 
 // app.use(express.static('static'))
-app.use(express.static('assets'))
-app.use(express.static('dist'))
+app.use(express.static(path.resolve('assets')))
+app.use(express.static(path.resolve('dist')))
 
 app.all('*', function (req, res, next) {
   req.videoService = videoService

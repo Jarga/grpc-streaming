@@ -10,10 +10,10 @@
 
 <script>
 import { css } from 'emotion'
-import ChatPanel from '../components/ChatPanel.vue'
-import Header from '../components/Header.vue'
-import Player from '../components/Player.vue'
-import { navHeight } from '../util'
+import Header from '@components/Header.vue'
+import ChatPanel from './ChatPanel.vue'
+import Player from './Player.vue'
+import { navHeight } from '../../util'
 
 const mainCN = css`
   display: flex;
@@ -36,6 +36,9 @@ export default {
       mainCN,
       rootCN,
     }
+  },
+  props: {
+    id: String,
   },
 }
 </script>

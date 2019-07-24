@@ -1,9 +1,9 @@
 <template>
   <section :class="wrapperCN">
     <a href="/" :class="breadcrumbCN">
-        <i class="fas fa-angle-left fa-lg"></i>
-        &nbsp;
-        <span>Back to List</span>
+      <i class="fas fa-angle-left fa-lg"></i>
+      &nbsp;
+      <span>Back to List</span>
     </a>
     <div v-if="!streaming" :class="offlineCN">OFFLINE</div>
     <div v-else :class="streamCN">
@@ -14,7 +14,7 @@
 
 <script>
 import { css } from 'emotion'
-import { playerPadding, rightSidebarWidth, secondaryColor } from '../util'
+import { playerPadding, rightSidebarWidth, secondaryColor } from '../../util'
 
 const breadcrumbCN = css`
   display: inline-flex;

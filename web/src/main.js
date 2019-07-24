@@ -1,43 +1,39 @@
 import Vue from 'vue'
 import { NotFound, List, Stream, Upload } from './pages'
+import SimpleRouter from './router'
 
-const splitPath = pathStr => pathStr.split('/').filter(s => !!s)
-const nestedViews = {
-  list: {
+const router = new SimpleRouter()
+router.registerRoutes([
+  {
     comp: List,
-    props: () => ({}),
+    exact: true,
+    path: '/',
   },
-  stream: {
+  {
     comp: Stream,
-    props: pathArr => (pathArr[1] ? { id: pathArr[1] } : {}),
+    path: '/stream/:id',
   },
-  upload: {
+  {
     comp: Upload,
-    props: () => ({}),
+    path: '/upload',
   },
-}
+])
 
 const app = new Vue({
   el: '#app',
   data: {
-    currentRoute: window.location.pathname,
+    currentPath: window.location.pathname,
   },
   computed: {
-    ViewObject() {
-      if (this.currentRoute === '/') return nestedViews.list
-
-      const split = splitPath(this.currentRoute)
-      const key = Object.keys(nestedViews).find(v => v === split[0])
-
-      return key && nestedViews[key]
+    routeConfig() {
+      return router.matchRoute(this.currentPath)
     },
   },
   render(h) {
-    const vo = this.ViewObject
-    const pathArr = splitPath(this.currentRoute)
+    const rc = this.routeConfig
 
-    if (vo) {
-      return h(vo.comp, vo.props(pathArr))
+    if (rc) {
+      return h(rc.comp, { props: rc.props })
     }
 
     return h(NotFound)
