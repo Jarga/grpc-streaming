@@ -3,7 +3,7 @@
     @input="$emit('input', $event.target.value)"
     :value="value"
     :class="cn"
-    placeholder="Send a message"
+    :placeholder="placeholder"
   />
 </template>
 
@@ -33,6 +33,7 @@ export default {
     }
   },
   props: {
+    placeholder: String,
     value: String,
   },
 }

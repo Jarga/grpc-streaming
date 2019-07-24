@@ -56,12 +56,17 @@ Object.assign(Router.prototype, {
 
       return r.exact ? match === pathname : match
     })
-    const props = this.findParams(found, pathname)
 
-    return {
-      comp: found.comp,
-      props,
+    if (found) {
+      const props = this.findParams(found, pathname)
+
+      return {
+        comp: found.comp,
+        props,
+      }
     }
+
+    return null
   },
 })
 

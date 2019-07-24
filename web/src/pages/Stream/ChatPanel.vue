@@ -1,17 +1,18 @@
 <template>
   <aside :class="cn">
     <div v-position-scroll:[handleScroll] ref="scrollElement" :class="messagesCN">
-      <p>Start Chatting!</p>
+      <p v-if="!messages.length">Get the comments started...</p>
+      <p v-else>Comments:</p>
       <ul :class="listCN">
         <ChatMessage v-for="message in messages" :key="message.id" :message="message" />
       </ul>
     </div>
     <div :class="formCN">
       <div>{{ errorText || '&nbsp;' }}</div>
-      <Input v-model="text" />
+      <Input v-model="text" placeholder="Add comment" />
       <div :class="actionsCN">
         <i @click="toggleSetup" class="fas fa-cogs fa-2x"></i>
-        <Button @click="handleSubmit" :disabled="!text">Chat</Button>
+        <Button @click="handleSubmit" :disabled="!text">Post</Button>
       </div>
     </div>
   </aside>
