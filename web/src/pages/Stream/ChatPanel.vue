@@ -80,8 +80,14 @@ export default {
       const t = this.text
       const el = this.$refs.scrollElement
 
-      this.text = ''
-      this.streamState.comments.push({ content: t, user: 'sjoyal' })
+      streamStore.emit('comment', t).then(
+        () => {
+          this.text = ''
+        },
+        err => {
+          this.errorText = err
+        }
+      )
 
       if (el && !this.scrolledUp) {
         this.$nextTick(function() {

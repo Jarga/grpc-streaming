@@ -32,6 +32,25 @@ export default {
       metaCN,
     }
   },
+  computed: {
+    date() {
+      const doubleQuotedDateString = this.file.created_at // -____-
+      const slice = doubleQuotedDateString.slice(1, -1)
+
+      // lol
+      const d = new Date(slice)
+      const month = d.getMonth() + 1
+      const date = d.getDate()
+      const year = d.getFullYear()
+      const hour = d.getHours() + 1
+      const minutes = d.getMinutes()
+      const seconds = d.getSeconds()
+
+      return `${month}-${date}-${year} ${hour <= 12 ? hour : hour - 12}:${minutes}:${seconds} ${
+        hour > 12 ? 'pm' : 'am'
+      }`
+    },
+  },
   props: {
     className: String,
     file: {
@@ -47,6 +66,6 @@ export default {
     <div>
       <a :href="`stream/${file.video_id}`" :class="titleCN">{{ file.file_name }}</a>
     </div>
-    <div :class="metaCN">TODO: add date here!</div>
+    <div :class="metaCN">{{ date }}</div>
   </li>
 </template>
