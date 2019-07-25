@@ -20,28 +20,22 @@ namespace grpc_chat_server
         public override async Task join(JoinRequest request, IServerStreamWriter<Message> responseStream, ServerCallContext context)
         {
             var observable = await _repo.GetCommentsObservable(request);
-            var breakCount = 0;
 
             using (var subscription = observable.Subscribe(async (message) =>
             {
                 try
                 {
-                    if(breakCount < 3)
-                    {
-                        await responseStream.WriteAsync(message);
-                        breakCount = 0;
-                    }
+                    await responseStream.WriteAsync(message);
                 }
                 catch (Exception e)
                 {
-                    breakCount++;
                     _logger.LogError(e, "Error while writing comments to response.");
                 }
             }))
             {
                 _logger.LogInformation("User {UserId} subscribed to video {VideoId}", request.UserId, request.VideoId);
                 //This is to prevent the response stream from being disposed
-                while (breakCount < 3)
+                while (true)
                 {
                     await Task.Delay(1000);
                 }

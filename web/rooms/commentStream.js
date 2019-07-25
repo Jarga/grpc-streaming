@@ -13,7 +13,8 @@ module.exports.subscribe = function (io, socket, chatService) {
     logger.info(`User ${user_id} connected to video ${video_id}`);
 
     if(!activeStreams[video_id]) {
-        activeStreams[video_id] = chatService.join({ video_id: video_id, user_id: user_id, })
+        activeStreams[video_id] = chatService.join({ video_id: video_id, user_id: user_id })
+
         activeStreams[video_id].on('data', chunk => {
             io.of(nsp).to(room).emit('comment_chunk', chunk);
         })
@@ -24,6 +25,18 @@ module.exports.subscribe = function (io, socket, chatService) {
         })
     }
   
+    socket.on('connect', function (data) {
+        chatService.send({ video_id: video_id, user_id: user_id, content: `User ${user_id} joined` }, (error, response) => {
+            if (error) { logger.error(error); }
+        })
+    });
+  
+    socket.on('comment', function (data) {
+        chatService.send({ video_id: video_id, user_id: user_id, content: data }, (error, response) => {
+            if (error) { logger.error(error); }
+        })
+    });
+
     socket.on('disconnect', function () {
         logger.info(`User ${user_id} disconnected from video ${video_id}`);
     });

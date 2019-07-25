@@ -19,7 +19,7 @@ module.exports.subscribe = function (io, socket, videoService) {
         })
         activeStreams[video_id].on('end', () => {
           delete activeStreams[video_id]
-          iio.of(nsp).to(room).emit('video_stream_end');
+          io.of(nsp).to(room).emit('video_stream_end');
           logger.info(`Video ${video_id} ended.`);
         })
     }
