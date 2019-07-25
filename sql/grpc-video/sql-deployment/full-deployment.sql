@@ -257,11 +257,22 @@ PRINT N'Creating [dbo].[Videos]...';
 
 GO
 CREATE TABLE [dbo].[Videos] (
-    [Id]               NVARCHAR (50)  NOT NULL,
-    [ExternalFileName] NVARCHAR (MAX) NOT NULL,
-    [ExternalFileId]   NVARCHAR (50)  NOT NULL,
+    [Id]               NVARCHAR (50)      NOT NULL,
+    [ExternalFileName] NVARCHAR (MAX)     NULL,
+    [ExternalFileId]   NVARCHAR (50)      NULL,
+    [StreamName]       NVARCHAR (MAX)     NULL,
+    [CreatedAt]        DATETIMEOFFSET (7) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
+GO
+PRINT N'Creating unnamed constraint on [dbo].[Videos]...';
+
+
+GO
+ALTER TABLE [dbo].[Videos]
+    ADD DEFAULT SYSDATETIMEOFFSET() FOR [CreatedAt];
 
 
 GO

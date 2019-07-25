@@ -10,10 +10,6 @@ service VideoStream {
     rpc streamRecords(RecordStreamRequest) returns (stream VideoRecord){}
 }
 
-message UploadChunk { 
-    bytes chunk = 1;
-}
-
 message StreamRecord { 
 	string video_id = 1;
     string stream_name = 2;

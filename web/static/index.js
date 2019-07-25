@@ -4,13 +4,33 @@
   // codecString = 'video/webm; codecs="vp8"';
   // codecString = 'video/webm; codecs="vp9"';
 
+  
+  var socket = io('/streams', { transports: ['websocket'], query: 'video_id=D7D633AE-CDA3-48A2-9546-3855CB400E1C&user_id=smcadams'})
+
   var video = document.getElementById('video')
-  var mediaSource = new MediaSource()
-  video.src = window.URL.createObjectURL(mediaSource)
+  var decodedStream = MediaStreamToWebm.DecodedStream(
+  {
+    videoElement: video, // specify an existing video element
+    mimeType: 'video/webm; codecs="opus,vp8"'
+  })
+
+  socket.on('video_chunk', resp => {
+    console.info('Got video chunk.', resp)
+    decodedStream.write(new Uint8Array(resp.chunk))
+  })
+  //socket.pipe(decodedStream)
+  video.autoplay = true
+  video.oncanplay = function () {
+      video.play()
+  }
+  // document.body.appendChild(video) 
+  //var video = document.getElementById('video')
+  //var mediaSource = new MediaSource()
+  //video.src = window.URL.createObjectURL(mediaSource)
   var buffer = null
   var queue = []
 
-  mediaSource.addEventListener('sourceopen', sourceBufferHandle)
+  //mediaSource.addEventListener('sourceopen', sourceBufferHandle)
 
   function updateBuffer() {
     if (queue.length > 0 && !buffer.updating) {
@@ -22,7 +42,7 @@
    */
   function sourceBufferHandle() {
     buffer = mediaSource.addSourceBuffer(
-      'video/mp4; codecs="avc1.4d001e,mp4a.40.5"'
+      'video/webm; codecs="opus,vp8"'
     )
     buffer.mode = 'sequence'
 
@@ -41,7 +61,6 @@
   }
 
   function initWS() {
-    var socket = io('/streams', { transports: ['websocket'], query: 'video_id=00D348BC-0B11-4AA1-82A4-6AE90EAF18F5&user_id=smcadams'})
     //new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/stream', 'echo-protocol');
     //ws.binaryType = "arraybuffer";
 

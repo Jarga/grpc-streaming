@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -62,7 +63,9 @@ namespace grpc_video_server.BackgroundServices
             {
                 try
                 {
-                    await _videoRepository.AddVideoFile(message.filename, message.id);
+                    if(new [] { ".mp4", ".webm" }.Contains(Path.GetExtension(message.filename))) {
+                        await _videoRepository.AddVideoFile(message.filename, message.id);
+                    }
                 }
                 catch (Exception e)
                 {

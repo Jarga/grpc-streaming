@@ -13,6 +13,7 @@ const videoService = require('./services/videoService').create()
 const chatService = require('./services/chatService').create()
 const commentStreamRoom = require('./rooms/commentStream')
 const videoStreamRoom = require('./rooms/videoStream')
+const uploadStreamRoom = require('./rooms/uploadStream')
 
 
 // log global unhandled errors
@@ -33,6 +34,10 @@ const io = socket_io.listen(server)
 io.of('/streams').on('connection', function(socket) {
   commentStreamRoom.subscribe(io, socket, chatService)
   videoStreamRoom.subscribe(io, socket, videoService)
+})
+
+io.of('/uploads').on('connection', function(socket) {
+  uploadStreamRoom.uploadStream(io, socket, videoService)
 })
 
 app.use(bodyParser.json())
@@ -64,6 +69,15 @@ app.get('/thing', function(req, res) {
 })
 app.get('/thing.js', function(req, res) {
   res.sendFile(path.resolve(__dirname, 'static/index.js'))
+})
+app.get('/thing2', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'static/index2.html'))
+})
+app.get('/thing2.js', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'static/index2.js'))
+})
+app.get('/mediastream-to-webm.js', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'static/mediastream-to-webm.js'))
 })
 
 app.get('/*', function(req, res) {
