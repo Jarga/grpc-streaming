@@ -1,19 +1,6 @@
-<template>
-  <section :class="wrapperCN">
-    <a href="/" :class="breadcrumbCN">
-      <i class="fas fa-angle-left fa-lg"></i>
-      &nbsp;
-      <span>Back to List</span>
-    </a>
-    <div v-if="!streaming" :class="offlineCN">OFFLINE</div>
-    <div v-else :class="streamCN">
-      <span>put something here</span>
-    </div>
-  </section>
-</template>
-
 <script>
 import { css } from 'emotion'
+import streamStore from '@store/stream'
 import { playerPadding, rightSidebarWidth, secondaryColor } from '../../util'
 
 const breadcrumbCN = css`
@@ -26,17 +13,26 @@ const breadcrumbCN = css`
   color: ${secondaryColor};
 `
 
-const streamCN = css`
-  color: #fff;
+const overlayCN = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+  font-size: 1.8rem;
 `
 
-const offlineCN = css`
+const playerCN = css`
+  height: 100%;
+  width: 100%;
+`
+
+const streamCN = css`
   height: calc(100% - ${playerPadding});
-  padding: 1rem;
   font-size: 1.4rem;
   background-color: #333;
   color: #fff;
-  text-align: right;
 `
 
 const wrapperCN = css`
@@ -49,13 +45,36 @@ export default {
   data() {
     return {
       breadcrumbCN,
+      overlayCN,
+      playerCN,
       streamCN,
-      offlineCN,
       wrapperCN,
+      streamState: streamStore.state,
     }
-  },
-  props: {
-    streaming: Boolean,
   },
 }
 </script>
+
+<template>
+  <section :class="wrapperCN">
+    <a href="/" :class="breadcrumbCN">
+      <i class="fas fa-angle-left fa-lg"></i>
+      &nbsp;
+      <span>Back to List</span>
+    </a>
+    <div :class="streamCN">
+      <div
+        v-if="streamState.error"
+        :class="overlayCN"
+      >
+        An error occurred
+      </div>
+      <video
+        autoplay
+        controls
+        :src="streamState.src"
+        :class="playerCN"
+      ></video>
+    </div>
+  </section>
+</template>

@@ -1,9 +1,3 @@
-<template>
-  <a :href="href" :class="[cn, isActive ? activeCN : '']">
-    <slot></slot>
-  </a>
-</template>
-
 <script>
 import { css } from 'emotion'
 import { hoverPrimaryColor, primaryColor } from '../util'
@@ -43,9 +37,24 @@ export default {
     },
   },
   props: {
-    evaluateActive: Function,
-    href: String,
-    regex: RegExp,
+    evaluateActive: {
+      type: Function,
+      required: true,
+    },
+    href: {
+      type: String,
+      required: true,
+    },
+    regex: {
+      type: RegExp,
+      required: true,
+    },
   },
 }
 </script>
+
+<template>
+  <a :href="href" :class="[cn, isActive ? activeCN : '']">
+    <slot></slot>
+  </a>
+</template>

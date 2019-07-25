@@ -1,13 +1,3 @@
-<template>
-  <li :class="cn">
-    <span :class="userCN"
-      ><strong>{{ message.user }}:</strong></span
-    >
-    &nbsp;
-    <span>{{ message.content }}</span>
-  </li>
-</template>
-
 <script>
 import { css } from 'emotion'
 
@@ -30,7 +20,20 @@ export default {
     }
   },
   props: {
-    message: Object,
+    message: {
+      type: Object,
+      required: true,
+    },
   },
 }
 </script>
+
+<template>
+  <li :class="cn">
+    <span :class="userCN"
+      ><strong>{{ message.user }}:</strong></span
+    >
+    &nbsp;
+    <span>{{ message.content }}</span>
+  </li>
+</template>

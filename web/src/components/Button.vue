@@ -1,9 +1,3 @@
-<template>
-  <button @click="$emit('click')" :disabled="disabled" :class="cn">
-    <slot></slot>
-  </button>
-</template>
-
 <script>
 import { css } from 'emotion'
 import { primaryColor, secondaryColor, hoverPrimaryColor } from '../util'
@@ -46,3 +40,9 @@ export default {
   },
 }
 </script>
+
+<template>
+  <button @click="$emit('click')" :disabled="disabled" :class="cn">
+    <slot></slot>
+  </button>
+</template>

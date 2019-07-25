@@ -16,6 +16,7 @@
     "body-parser": "^1.19.0",
     "chat-proto": "^1.0.5",
     "config": "^3.2.2",
+    "debug": "^4.1.1",
     "emotion": "^10.0.14",
     "express": "^4.17.1",
     "express-winston": "^3.2.1",

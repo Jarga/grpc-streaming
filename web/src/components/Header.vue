@@ -1,21 +1,3 @@
-<template>
-  <header :class="cn">
-    <div :class="leftCN">
-      <i class="far fa-comment-alt fa-lg"></i>
-      &nbsp; &nbsp;
-      <NavLink href="/" :evaluateActive="regex => regex.test(pathname)" :regex="/^\/$|^\/stream/">
-        Watch
-      </NavLink>
-      <NavLink href="/upload" :evaluateActive="regex => regex.test(pathname)" :regex="/^\/upload/">
-        Upload
-      </NavLink>
-    </div>
-    <div>
-      <i class="far fa-user fa-lg"></i>
-    </div>
-  </header>
-</template>
-
 <script>
 import { css } from 'emotion'
 import NavLink from './NavLink.vue'
@@ -51,3 +33,21 @@ export default {
   },
 }
 </script>
+
+<template>
+  <header :class="cn">
+    <div :class="leftCN">
+      <i class="far fa-comment-alt fa-lg"></i>
+      &nbsp; &nbsp;
+      <NavLink href="/" :evaluateActive="regex => regex.test(pathname)" :regex="/^\/$|^\/stream/">
+        Watch
+      </NavLink>
+      <NavLink href="/upload" :evaluateActive="regex => regex.test(pathname)" :regex="/^\/upload/">
+        Upload
+      </NavLink>
+    </div>
+    <div>
+      <i class="far fa-user fa-lg"></i>
+    </div>
+  </header>
+</template>

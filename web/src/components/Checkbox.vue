@@ -1,14 +1,3 @@
-<template>
-  <div :class="cn">
-    <input type="checkbox" :checked="checked" :disabled="disabled" :class="inputCN" />
-    <div
-      @click="handleClick"
-      :class="[boxCN, checked ? checkedCN : '', disabled ? disabledCN : '']"
-    />
-    <span><slot></slot></span>
-  </div>
-</template>
-
 <script>
 import { css } from 'emotion'
 import { primaryColor, secondaryColor } from '../util'
@@ -82,8 +71,22 @@ export default {
     },
   },
   props: {
-    checked: Boolean,
+    checked: {
+      type: Boolean,
+      required: true,
+    },
     disabled: Boolean,
   },
 }
 </script>
+
+<template>
+  <div :class="cn">
+    <input type="checkbox" :checked="checked" :disabled="disabled" :class="inputCN" />
+    <div
+      @click="handleClick"
+      :class="[boxCN, checked ? checkedCN : '', disabled ? disabledCN : '']"
+    />
+    <span><slot></slot></span>
+  </div>
+</template>

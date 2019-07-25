@@ -1,18 +1,9 @@
-<template>
-  <div :class="rootCN">
-    <Header />
-    <main :class="mainCN">
-      <Player />
-      <ChatPanel />
-    </main>
-  </div>
-</template>
-
 <script>
 import { css } from 'emotion'
 import Header from '@components/Header.vue'
 import ChatPanel from './ChatPanel.vue'
 import Player from './Player.vue'
+import streamStore from '@store/stream'
 import { navHeight } from '../../util'
 
 const mainCN = css`
@@ -37,8 +28,24 @@ export default {
       rootCN,
     }
   },
+  mounted() {
+    streamStore.init(this.id)
+  },
   props: {
-    id: String,
+    id: {
+      type: String,
+      required: true,
+    },
   },
 }
 </script>
+
+<template>
+  <div :class="rootCN">
+    <Header />
+    <main :class="mainCN">
+      <Player />
+      <ChatPanel />
+    </main>
+  </div>
+</template>

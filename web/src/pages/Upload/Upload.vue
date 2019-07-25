@@ -1,10 +1,3 @@
-<template>
-  <div>
-    <Header />
-    <span>This is the {{ text }} page</span>
-  </div>
-</template>
-
 <script>
 import Header from '@components/Header.vue'
 
@@ -19,3 +12,10 @@ export default {
   },
 }
 </script>
+
+<template>
+  <div>
+    <Header />
+    <span>This is the {{ text }} page</span>
+  </div>
+</template>

@@ -1,12 +1,3 @@
-<template>
-  <input
-    @input="$emit('input', $event.target.value)"
-    :value="value"
-    :class="cn"
-    placeholder="Send a message"
-  />
-</template>
-
 <script>
 import { css } from 'emotion'
 import { primaryColor, rightSidebarWidth } from '../util'
@@ -33,7 +24,20 @@ export default {
     }
   },
   props: {
-    value: String,
+    placeholder: String,
+    value: {
+      type: String,
+      required: true,
+    },
   },
 }
 </script>
+
+<template>
+  <input
+    @input="$emit('input', $event.target.value)"
+    :value="value"
+    :class="cn"
+    :placeholder="placeholder"
+  />
+</template>
