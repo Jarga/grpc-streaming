@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace grpc_video_server.Repositories
@@ -25,6 +26,8 @@ namespace grpc_video_server.Repositories
         {
             public string ExternalFileName { get; set; }
             public string ExternalFileId { get; set; }
+            public string StreamName { get; set; }
+            public DateTimeOffset CreatedAt { get; set; }
         } 
 
         public async Task<FileResult> FindById(string videoId)
@@ -33,8 +36,20 @@ namespace grpc_video_server.Repositories
             {
                 await conn.OpenAsync();
 
-                var sql = @"SELECT [ExternalFileName], [ExternalFileId] FROM [dbo].[Videos] WHERE [Id] = @VideoId";
+                var sql = @"SELECT [ExternalFileName], [ExternalFileId], [StreamName], [CreatedAt] FROM [dbo].[Videos] WHERE [Id] = @VideoId";
                 return await conn.QueryFirstAsync<FileResult>(sql, new { VideoId = videoId });
+            }
+        }
+
+        public async Task<bool> AddStream(Guid streamId)
+        {
+            using (var conn = new SqlConnection(_sqlConnectionString))
+            {
+                await conn.OpenAsync();
+
+                var sql = @"INSERT INTO [dbo].[Videos] ([Id], [StreamName]) VALUES (@Id, @StreamName)";
+                var result = await conn.ExecuteAsync(sql, new { Id = streamId, StreamName = streamId.ToString() });
+                return result == 1;
             }
         }
 
@@ -60,8 +75,9 @@ namespace grpc_video_server.Repositories
                 var offsetClause = offset.HasValue ? "OFFSET @Offset ROWS" : string.Empty;
                 var fetchClause = fetch.HasValue ? "FETCH NEXT @Fetch ROWS ONLY" : string.Empty;
                 var sql = $@"SELECT * FROM [dbo].[Videos]
-                            {offsetClause} 
-                            {fetchClause}
+                             ORDER BY CreatedAt DESC
+                             {offsetClause} 
+                             {fetchClause}
                            ";
 
                 var result = conn.Query(sql, new { Offset = offset, Fetch = fetch }, buffered: true);
@@ -72,8 +88,9 @@ namespace grpc_video_server.Repositories
 
                     await stream.WriteAsync(new VideoRecord {
                         VideoId = itemAsDict["Id"].ToString(),
-                        FileName = itemAsDict["ExternalFileName"].ToString(),
-                        FileId = itemAsDict["ExternalFileId"].ToString()
+                        FileName = itemAsDict["ExternalFileName"]?.ToString() ?? "STREAM",
+                        FileId = itemAsDict["ExternalFileId"]?.ToString() ?? string.Empty,
+                        CreatedAt = JsonSerializer.ToString((DateTimeOffset)itemAsDict["CreatedAt"])
                     });
                 }
             }

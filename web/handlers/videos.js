@@ -5,7 +5,7 @@ const list = (req, res) => {
     const fetch = req.body.fetch
 
     var stream = req.videoService.streamRecords({ offset, fetch })
-    stream.on('error', () => res.status(500).send('Something broke!'));
+    stream.on('error', (error) => res.status(500).send(`Something broke! Error: ${error}`));
 
     const stringifyTransform = new Transform({
         objectMode: true,
