@@ -95,7 +95,7 @@ export default {
     </div>
     <div v-else-if="files.loading" :class="loadingCN" />
     <ul v-else :class="listCN">
-      <ListItem v-for="file in files.data" :key="file.file_id" :file="file" :className="propCN" />
+      <ListItem v-for="file in files.data" :key="file.video_id" :file="file" :className="propCN" />
     </ul>
   </section>
 </template>

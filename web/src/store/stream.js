@@ -90,12 +90,10 @@ Object.assign(StreamStore.prototype, {
     })
 
     socket.on('video_stream_end', () => {
-      if(!this.bufferQueue.length && !buffer.updating) {
+      this.isDone = true
+      if (!this.bufferQueue.length && !buffer.updating) {
+        log('calling end of stream in socket call', ms)
         ms.endOfStream()
-        console.log('END OF STREAM!', ms)
-      }
-      else {
-        this.isDone = true
       }
     })
 
@@ -114,9 +112,9 @@ Object.assign(StreamStore.prototype, {
     if (this.bufferQueue.length && !buffer.updating) {
       log('appending to source buffer')
       buffer.appendBuffer(this.bufferQueue.shift())
-    } else if(this.isDone) {
-      ms.endOfStream()
-      console.log('END OF STREAM!', ms)
+    } else if (this.isDone && !buffer.updating) {
+      log('end of stream')
+      ms.readyState !== 'ended' && ms.endOfStream()
     }
   },
 })
