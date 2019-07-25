@@ -40,7 +40,7 @@ Object.assign(StreamStore.prototype, {
     const ms = new MediaSource()
 
     this.state.src = URL.createObjectURL(ms)
-
+    
     log('adding source open event listener')
     ms.addEventListener('sourceopen', this.manageBuffer(ms))
   },
@@ -90,8 +90,13 @@ Object.assign(StreamStore.prototype, {
     })
 
     socket.on('video_stream_end', () => {
-      ms.endOfStream()
-      console.log('END OF STREAM!', ms)
+      if(!this.bufferQueue.length && !buffer.updating) {
+        ms.endOfStream()
+        console.log('END OF STREAM!', ms)
+      } 
+      else {
+        this.isDone = true
+      }
     })
 
     socket.on('video_chunk', resp => {
@@ -109,6 +114,9 @@ Object.assign(StreamStore.prototype, {
     if (this.bufferQueue.length && !buffer.updating) {
       log('appending to source buffer')
       buffer.appendBuffer(this.bufferQueue.shift())
+    } else if(this.isDone) {
+      ms.endOfStream()
+      console.log('END OF STREAM!', ms)
     }
   },
 })
