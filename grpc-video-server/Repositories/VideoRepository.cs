@@ -90,7 +90,8 @@ namespace grpc_video_server.Repositories
                         VideoId = itemAsDict["Id"].ToString(),
                         FileName = itemAsDict["ExternalFileName"]?.ToString() ?? "STREAM",
                         FileId = itemAsDict["ExternalFileId"]?.ToString() ?? string.Empty,
-                        CreatedAt = JsonSerializer.ToString((DateTimeOffset)itemAsDict["CreatedAt"])
+                        CreatedAt = JsonSerializer.ToString((DateTimeOffset)itemAsDict["CreatedAt"]),
+                        IsStream = !string.IsNullOrWhiteSpace(itemAsDict["StreamName"]?.ToString())
                     });
                 }
             }

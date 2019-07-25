@@ -25,6 +25,7 @@ message VideoRecord {
     string file_name = 2;
 	string file_id = 3;
 	string created_at = 4;
+	bool is_stream = 5;
 }
 
 message RecordStreamRequest { 
