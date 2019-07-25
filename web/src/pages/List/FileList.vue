@@ -1,11 +1,3 @@
-<template>
-  <section :class="cn">
-    <ul :class="listCN">
-      <ListItem v-for="file in files" :key="file.id" :file="file" :className="propCN" />
-    </ul>
-  </section>
-</template>
-
 <script>
 import { css } from 'emotion'
 import ListItem from './ListItem.vue'
@@ -38,14 +30,29 @@ export default {
   data() {
     return {
       cn,
-      files: [
-        { id: 1, date: '7-24-2019', filename: 'test.mp4' },
-        { id: 2, date: '7-24-2019', filename: 'test2.mp4' },
-        { id: 3, date: '7-24-2019', filename: 'test3.mp4' },
-      ],
       listCN,
       propCN,
     }
   },
+  props: {
+    files: {
+      type: Object,
+      required: true,
+    },
+  },
 }
 </script>
+
+<template>
+  <section :class="cn">
+    <div
+        v-if="files.error || files.loading"
+        :class="['base', files.loading ? 'loading' : '']"
+    >
+        {{ files.error || 'Loading...' }}
+    </div>
+    <ul v-else :class="listCN">
+      <ListItem v-for="file in files.data" :key="file.file_id" :file="file" :className="propCN" />
+    </ul>
+  </section>
+</template>

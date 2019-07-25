@@ -1,13 +1,3 @@
-<template>
-  <div :class="cn">
-    <i class="fas fa-map-marked fa-10x"></i>
-    <div :class="textCN">
-      <h2>Looks Like You're Lost...</h2>
-      <Button @click="handleClick">Start Over</Button>
-    </div>
-  </div>
-</template>
-
 <script>
 import { css } from 'emotion'
 import Button from '@components/Button.vue'
@@ -46,3 +36,13 @@ export default {
   },
 }
 </script>
+
+<template>
+  <div :class="cn">
+    <i class="fas fa-map-marked fa-10x"></i>
+    <div :class="textCN">
+      <h2>Looks Like You're Lost...</h2>
+      <Button @click="handleClick">Start Over</Button>
+    </div>
+  </div>
+</template>

@@ -1,15 +1,3 @@
-<template>
-  <aside :class="cn">
-    <h2>File Manifest</h2>
-    <div :class="filtersCN">
-      <Checkbox checked>Videos</Checkbox>
-      <Checkbox disabled :checked="false">
-        Documents
-      </Checkbox>
-    </div>
-  </aside>
-</template>
-
 <script>
 import { css } from 'emotion'
 import Checkbox from '@components/Checkbox.vue'
@@ -39,3 +27,15 @@ export default {
   },
 }
 </script>
+
+<template>
+  <aside :class="cn">
+    <h2>File Manifest</h2>
+    <div :class="filtersCN">
+      <Checkbox checked>Videos</Checkbox>
+      <Checkbox disabled :checked="false">
+        Documents
+      </Checkbox>
+    </div>
+  </aside>
+</template>

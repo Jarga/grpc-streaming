@@ -1,27 +1,8 @@
-<template>
-  <aside :class="cn">
-    <div v-position-scroll:[handleScroll] ref="scrollElement" :class="messagesCN">
-      <p v-if="!messages.length">Get the comments started...</p>
-      <p v-else>Comments:</p>
-      <ul :class="listCN">
-        <ChatMessage v-for="message in messages" :key="message.id" :message="message" />
-      </ul>
-    </div>
-    <div :class="formCN">
-      <div>{{ errorText || '&nbsp;' }}</div>
-      <Input v-model="text" placeholder="Add comment" />
-      <div :class="actionsCN">
-        <i @click="toggleSetup" class="fas fa-cogs fa-2x"></i>
-        <Button @click="handleSubmit" :disabled="!text">Post</Button>
-      </div>
-    </div>
-  </aside>
-</template>
-
 <script>
 import { css } from 'emotion'
 import Button from '@components/Button.vue'
 import Input from '@components/Input.vue'
+import streamStore from '@store/stream'
 import ChatMessage from './ChatMessage.vue'
 import { primaryColor, redColor, rightSidebarWidth } from '../../util'
 
@@ -74,16 +55,7 @@ export default {
       formCN,
       listCN,
       messagesCN,
-      messages: [
-        { id: 1, content: 'Hello World', user: 'sjoyal' },
-        { id: 2, content: 'foo bar', user: 'jpdienst' },
-        {
-          id: 3,
-          content:
-            'a long as string of shit text to test what happens when someone types this much',
-          user: 'jpdienst',
-        },
-      ],
+      streamState: streamStore.state,
       scrolledUp: false,
       text: '',
     }
@@ -109,7 +81,7 @@ export default {
       const el = this.$refs.scrollElement
 
       this.text = ''
-      this.messages = [...this.messages, { id: 31, content: t, user: 'sjoyal' }]
+      this.streamState.comments.push({ content: t, user: 'sjoyal' })
 
       if (el && !this.scrolledUp) {
         this.$nextTick(function() {
@@ -123,3 +95,27 @@ export default {
   },
 }
 </script>
+
+<template>
+  <aside :class="cn">
+    <div v-position-scroll:[handleScroll] ref="scrollElement" :class="messagesCN">
+      <p v-if="!streamState.comments.length"><em>Get the comments started...</em></p>
+      <h3 v-else><strong>Comments</strong></h3>
+      <ul :class="listCN">
+        <ChatMessage
+          v-for="(message, i) in streamState.comments"
+          :key="`${message.user}_${i}`"
+          :message="message"
+        />
+      </ul>
+    </div>
+    <div :class="formCN">
+      <div>{{ errorText || '&nbsp;' }}</div>
+      <Input v-model="text" placeholder="Add comment" />
+      <div :class="actionsCN">
+        <i @click="toggleSetup" class="fas fa-cogs fa-2x"></i>
+        <Button @click="handleSubmit" :disabled="!text">Post</Button>
+      </div>
+    </div>
+  </aside>
+</template>

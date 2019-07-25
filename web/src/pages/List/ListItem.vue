@@ -1,12 +1,3 @@
-<template>
-  <li :class="[className, cn]">
-    <div>
-      <a :href="`stream/${file.id}`" :class="titleCN">{{ file.filename }}</a>
-    </div>
-    <div :class="metaCN">{{ file.date }}</div>
-  </li>
-</template>
-
 <script>
 import { css } from 'emotion'
 import { secondaryColor } from '../../util'
@@ -43,7 +34,19 @@ export default {
   },
   props: {
     className: String,
-    file: Object,
+    file: {
+      type: Object,
+      required: true,
+    },
   },
 }
 </script>
+
+<template>
+  <li :class="[cn, className || '']">
+    <div>
+      <a :href="`stream/${file.video_id}`" :class="titleCN">{{ file.file_name }}</a>
+    </div>
+    <div :class="metaCN">TODO: add date here!</div>
+  </li>
+</template>
