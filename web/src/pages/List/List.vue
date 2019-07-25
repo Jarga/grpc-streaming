@@ -75,7 +75,7 @@ export default {
     }
 
     // simulate some latency bc this shit is too fast right meow and looks like legit fake data
-    setTimeout(this.fetchFiles, 250)
+    setTimeout(this.fetchFiles, 500)
   },
 }
 </script>
