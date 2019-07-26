@@ -18,7 +18,7 @@ namespace grpc_chat_client
             httpClient.BaseAddress = new Uri("http://localhost:5000");
             var client = GrpcClient.Create<Chat.ChatClient>(httpClient);
 
-            var videoId = "TEST";
+            var videoId = "7AA7C331-E66A-478B-BE49-75CF81CDAEFC";
             var userId = DateTime.Now.Ticks.ToString();
 
             var responseStream = client.join(new JoinRequest { VideoId = videoId, UserId = userId }).ResponseStream;

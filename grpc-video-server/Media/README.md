@@ -1,2 +1,0 @@
-Required to convert video:
-.\ffmpeg -i 'C:\adventure_time_bacon_pancakes_new_york_remix.mp4' -movflags frag_keyframe+empty_moov+default_base_moof 'C:\adventure_time_bacon_pancakes_new_york_remix_frag.mp4'

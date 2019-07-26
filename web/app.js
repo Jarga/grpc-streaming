@@ -64,22 +64,6 @@ Object.keys(videoHandlers).forEach(key => {
   app[handlerEntry.type](`/api/videos/${key}`, handlerEntry.handler);
 });
 
-app.get('/thing', function(req, res) {
-  res.sendFile(path.resolve(__dirname, 'static/index.html'))
-})
-app.get('/thing.js', function(req, res) {
-  res.sendFile(path.resolve(__dirname, 'static/index.js'))
-})
-app.get('/thing2', function(req, res) {
-  res.sendFile(path.resolve(__dirname, 'static/index2.html'))
-})
-app.get('/thing2.js', function(req, res) {
-  res.sendFile(path.resolve(__dirname, 'static/index2.js'))
-})
-app.get('/mediastream-to-webm.js', function(req, res) {
-  res.sendFile(path.resolve(__dirname, 'static/mediastream-to-webm.js'))
-})
-
 app.get('/*', function(req, res) {
   res.sendFile(path.resolve(__dirname, 'views/index.html'))
 })
