@@ -19,19 +19,16 @@ namespace grpc_video_server.BackgroundServices
         private readonly ILogger _logger;
         private readonly VideoRepository _videoRepository;
         private readonly ConnectionMultiplexer _redisMultiplexer;
-        private readonly TranscodeService transcodeService;
         private const string _fileEventKey = "grpc_file_events";
 
         public FileEventService(
             ConnectionMultiplexer redisMultiplexer,
-            TranscodeService transcodeService,
             VideoRepository videoRepository,
             ILogger<FileEventService> logger)
         {
             _logger = logger;
             _videoRepository = videoRepository;
             _redisMultiplexer = redisMultiplexer;
-            this.transcodeService = transcodeService;
         }
 
         private FileEvent FromRedisValue(RedisValue value)
@@ -68,8 +65,7 @@ namespace grpc_video_server.BackgroundServices
                 {
                     if(new [] { ".mp4", ".webm" }.Contains(Path.GetExtension(message.filename)))
                     {
-                        var result = await transcodeService.TranscodeAndUpload(message);
-                        await _videoRepository.AddVideoFile(result.Filename, result.Id);
+                        await _videoRepository.AddVideoFile(message.filename, message.id);
                     }
                 }
                 catch (Exception e)

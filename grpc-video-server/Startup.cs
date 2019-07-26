@@ -32,7 +32,6 @@ namespace grpc_video_server
 
             services.AddLogging(config => config.AddConsole());
             services.AddTransient<VideoRepository>();
-            services.AddTransient<TranscodeService>();
 
             services.AddGrpcClient<FileServer.FileServerClient>((options) =>
             {
