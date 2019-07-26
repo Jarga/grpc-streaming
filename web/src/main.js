@@ -23,10 +23,11 @@ const app = new Vue({
   el: '#app',
   data: {
     currentPath: window.location.pathname,
+    currentSearch: window.location.search,
   },
   computed: {
     routeConfig() {
-      return router.matchRoute(this.currentPath)
+      return router.matchRoute(this.currentPath, this.currentSearch)
     },
   },
   render(h) {

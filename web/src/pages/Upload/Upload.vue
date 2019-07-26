@@ -17,11 +17,11 @@ const buttonCN = css`
   background-color: #e8e8e8;
   color: ${secondaryColor};
   font-size: 2.4rem;
-  opacity: .6;
+  opacity: 0.6;
   outline: none;
   &:hover {
-      opacity: 1;
-      cursor: pointer;
+    opacity: 1;
+    cursor: pointer;
   }
 `
 

@@ -29,12 +29,16 @@ export default {
     }
   },
   mounted() {
-    streamStore.init(this.id)
+    const bool = this.isStream === 'true'
+    streamStore.init(this.id, bool)
   },
   props: {
     id: {
       type: String,
       required: true,
+    },
+    isStream: {
+      type: String,
     },
   },
 }

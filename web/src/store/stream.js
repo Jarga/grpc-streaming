@@ -1,5 +1,6 @@
 import debug from 'debug'
 import io from 'socket.io-client'
+import MediaStreamToWebm from 'mediastream-to-webm'
 
 const log = debug('grpc-streaming:web:stream')
 const mimecodec = 'video/mp4; codecs="avc1.4d001e,mp4a.40.5"'
@@ -27,8 +28,15 @@ Object.assign(StreamStore.prototype, {
       })
     })
   },
-  init(id) {
-    this.videoId = id
+  init(id, isStream) {
+      this.videoId = id
+    if (isStream) {
+      this.initStream()
+    } else {
+      this.initVideo()
+    }
+  },
+  initVideo() {
     this.state.loading = true
 
     if (!MediaSource.isTypeSupported(mimecodec)) {
@@ -43,6 +51,47 @@ Object.assign(StreamStore.prototype, {
 
     log('adding source open event listener')
     ms.addEventListener('sourceopen', this.manageBuffer(ms))
+  },
+  initStream() {
+    const socket = io('/streams', {
+      transports: ['websocket'],
+      query: `video_id=${this.videoId}&user_id=sjoyal`,
+    })
+
+    var decodedStream = MediaStreamToWebm.DecodedStream({
+      mimeType: 'video/webm; codecs="opus,vp8"',
+    })
+
+    socket.on('connect', () => {
+      log('socket connected')
+      this.state.error = null
+      this.state.loading = false
+    })
+
+    socket.on('error', err => {
+      log('socket error', err)
+      this.state.error = err
+      this.state.loading = false
+    })
+
+    socket.on('comment_chunk', chunk => {
+      log('comment_chunk received')
+      this.state.comments.push({
+        user: chunk.user_id,
+        content: chunk.content,
+      })
+    })
+
+    socket.on('video_stream_end', () => {
+      log('end of stream')
+    })
+
+    socket.on('video_chunk', resp => {
+        log('video_chunk received')
+        decodedStream.write(new Uint8Array(resp.chunk))
+    })
+
+    this.socket = socket
   },
   manageBuffer(ms) {
     return () => {
