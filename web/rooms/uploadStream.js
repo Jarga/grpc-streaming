@@ -13,7 +13,7 @@ module.exports.uploadStream = function (io, socket, videoService) {
     })
     socket.on('video_chunk', function (data) {
         //TODO: Allow setting name/id/etc
-        activeStreams[user_id].write({ video_id: "", chunk: data.chunk.data })
+        activeStreams[user_id].write({ video_id: "", chunk: data.chunk })
     })
     socket.on('disconnect', function () {
         activeStreams[user_id].end()
