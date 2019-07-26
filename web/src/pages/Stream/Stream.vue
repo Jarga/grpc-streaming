@@ -28,9 +28,13 @@ export default {
       rootCN,
     }
   },
+  computed: {
+    isStreamComputed() {
+      return this.isStream === 'true'
+    },
+  },
   mounted() {
-    const bool = this.isStream === 'true'
-    streamStore.init(this.id, bool)
+    streamStore.init(this.id, this.isStreamComputed)
   },
   props: {
     id: {
@@ -48,7 +52,7 @@ export default {
   <div :class="rootCN">
     <Header />
     <main :class="mainCN">
-      <Player />
+      <Player :isStream="isStreamComputed" />
       <ChatPanel />
     </main>
   </div>

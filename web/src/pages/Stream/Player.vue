@@ -31,8 +31,7 @@ const playerCN = css`
 const streamCN = css`
   height: calc(100% - ${playerPadding});
   font-size: 1.4rem;
-  background-color: #333;
-  color: #fff;
+  background-color: #v-else#fff;
 `
 
 const wrapperCN = css`
@@ -52,6 +51,12 @@ export default {
       streamState: streamStore.state,
     }
   },
+  props: {
+    isStream: {
+      type: Boolean,
+      required: true,
+    },
+  },
 }
 </script>
 
@@ -66,7 +71,8 @@ export default {
       <div v-if="streamState.error" :class="overlayCN">
         An error occurred
       </div>
-      <video autoplay controls id="video" :src="streamState.src" :class="playerCN"></video>
+      <video v-if="this.isStream" autoplay controls id="video" :class="playerCN"></video>
+      <video v-else autoplay controls :src="streamState.src" :class="playerCN"></video>
     </div>
   </section>
 </template>

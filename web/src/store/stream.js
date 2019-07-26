@@ -29,7 +29,7 @@ Object.assign(StreamStore.prototype, {
     })
   },
   init(id, isStream) {
-      this.videoId = id
+    this.videoId = id
     if (isStream) {
       this.initStream()
     } else {
@@ -37,6 +37,7 @@ Object.assign(StreamStore.prototype, {
     }
   },
   initVideo() {
+    log('attempting to start video')
     this.state.loading = true
 
     if (!MediaSource.isTypeSupported(mimecodec)) {
@@ -53,12 +54,16 @@ Object.assign(StreamStore.prototype, {
     ms.addEventListener('sourceopen', this.manageBuffer(ms))
   },
   initStream() {
+    const videoElement = document.getElementById('video')
+
+    log('attempting to start stream')
     const socket = io('/streams', {
       transports: ['websocket'],
       query: `video_id=${this.videoId}&user_id=sjoyal`,
     })
 
     var decodedStream = MediaStreamToWebm.DecodedStream({
+      videoElement,
       mimeType: 'video/webm; codecs="opus,vp8"',
     })
 
@@ -87,9 +92,14 @@ Object.assign(StreamStore.prototype, {
     })
 
     socket.on('video_chunk', resp => {
-        log('video_chunk received')
-        decodedStream.write(new Uint8Array(resp.chunk))
+      log('video_chunk received')
+      decodedStream.write(new Uint8Array(resp.chunk))
     })
+
+    video.autoplay = true
+    video.oncanplay = () => {
+      video.play()
+    }
 
     this.socket = socket
   },
