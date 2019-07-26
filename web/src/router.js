@@ -1,6 +1,7 @@
 const slash = '/'
 const escapeRegex = /\/|:[\w-]+/g
-const paramRegex = /^:[\w-]+$/
+const paramRegex = /^:[\w-]+/
+const queryRegex = /\?\w+=\w+|&\w+=\w+/g
 const normalizePath = path => {
   const lead = path.slice(0, 1) === slash
   const trail = path.slice(-1) === slash
@@ -29,26 +30,35 @@ Object.assign(Router.prototype, {
 
     this.routes = mapped
   },
-  findParams(routeConfig, pathname) {
+  findParams(routeConfig, pathname, search) {
     const pathArr = normalizePath(pathname).split(slash)
     const matchArr = normalizePath(routeConfig.path).split(slash)
+    const searchMatch = search && search.match(queryRegex)
     let props = {}
 
     for (let i = 1; i < matchArr.length - 1; i++) {
       const fragment = matchArr[i]
-      const match = fragment.match(paramRegex)
+      const paramMatch = fragment.match(paramRegex)
 
-      if (match) {
+      if (paramMatch) {
         props = {
           ...props,
-          [match[0].slice(1)]: pathArr[i],
+          [paramMatch[0].slice(1)]: pathArr[i],
         }
       }
     }
 
+    if (searchMatch) {
+        const smArr = searchMatch.map(sm => sm.slice(1).split('='))
+        props = smArr.reduce((obj, [key, value]) => ({
+            ...obj,
+            [key]: value,
+        }), props)
+    }
+
     return props
   },
-  matchRoute(pathname) {
+  matchRoute(pathname, search) {
     const routes = this.routes
     const found = routes.find(r => {
       const regex = new RegExp(r.match, 'i')
@@ -58,7 +68,7 @@ Object.assign(Router.prototype, {
     })
 
     if (found) {
-      const props = this.findParams(found, pathname)
+      const props = this.findParams(found, pathname, search)
 
       return {
         comp: found.comp,

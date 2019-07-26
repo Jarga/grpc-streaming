@@ -50,6 +50,16 @@ export default {
         hour > 12 ? 'pm' : 'am'
       }`
     },
+    href() {
+        const isStream = this.file.is_stream
+        let href = `stream/${this.file.video_id}`
+
+        if (isStream) {
+            href = `${href}?isStream=true`
+        }
+
+        return href
+    }
   },
   props: {
     className: String,
@@ -64,7 +74,7 @@ export default {
 <template>
   <li :class="[cn, className || '']">
     <div>
-      <a :href="`stream/${file.video_id}`" :class="titleCN">{{ file.file_name }}</a>
+      <a :href="href" :class="titleCN">{{ file.file_name }}</a>
     </div>
     <div :class="metaCN">{{ date }}</div>
   </li>

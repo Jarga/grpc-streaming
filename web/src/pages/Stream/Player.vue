@@ -63,18 +63,10 @@ export default {
       <span>Back to List</span>
     </a>
     <div :class="streamCN">
-      <div
-        v-if="streamState.error"
-        :class="overlayCN"
-      >
+      <div v-if="streamState.error" :class="overlayCN">
         An error occurred
       </div>
-      <video
-        autoplay
-        controls
-        :src="streamState.src"
-        :class="playerCN"
-      ></video>
+      <video autoplay controls id="video" :src="streamState.src" :class="playerCN"></video>
     </div>
   </section>
 </template>
