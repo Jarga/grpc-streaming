@@ -33,3 +33,33 @@ services:
         - "6379:6379"
     image: redis:alpine
     restart: on-failure
+  grpc-chat-server:
+    ports:
+        - "5000:5000"
+    image: jarga/grpc-chat-server:1.0.9
+    restart: on-failure
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://localhost:5000
+  grpc-video-server:
+    ports:
+        - "5010:5010"
+    image: jarga/grpc-video-server:1.0.9
+    restart: on-failure
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://localhost:5010
+  grpc-file-server:
+    ports:
+        - "50051:50051"
+    image: jarga/grpc-file-server:1.0.9
+    restart: on-failure
+    environment:
+        - NODE_ENV=development
+  grpc-web:
+    ports:
+        - "3000:3000"
+    image: jarga/grpc-web:1.0.9
+    restart: on-failure
+    environment:
+        - NODE_ENV=development

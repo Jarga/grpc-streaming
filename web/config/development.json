@@ -1,0 +1,4 @@
+{
+    "videoServerUrl": "grpc-video-server:5010",
+    "chatServerUrl": "grpc-chat-server:5000"
+}

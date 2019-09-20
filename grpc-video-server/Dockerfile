@@ -22,7 +22,7 @@ COPY ./ ./
 RUN dotnet publish -o build --runtime linux-musl-x64
 
 #--------------------------- Runtime -----------------------------#
-FROM mcr.microsoft.com/dotnet/core/runtime:3.0.0-rc1-alpine3.9 as runtime
+FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.0.0-rc1-alpine as runtime
 
 WORKDIR /app
 

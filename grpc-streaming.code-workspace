@@ -1,10 +1,6 @@
 {
 	"folders": [
 		{
-			"path": ".",
-			"name": "~"
-		},
-		{
 			"path": "./grpc-file-server",
 			"name": "grpc-file-server"
 		},
@@ -29,6 +25,10 @@
 		},
 		{
 			"path": "sql"
+		},
+		{
+			"path": ".",
+			"name": "~"
 		}
 	],
 	"settings": {}
