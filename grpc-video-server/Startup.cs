@@ -41,7 +41,7 @@ namespace grpc_video_server
             services.AddSingleton((services) =>
             {
                 var config = Configuration.GetConnectionString("Redis");
-                return ConnectionMultiplexer.Connect("localhost");
+                return ConnectionMultiplexer.Connect(config);
             });
             services.AddHostedService<FileEventService>();
         }

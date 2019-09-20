@@ -27,6 +27,16 @@ pipeline {
           sh "docker login -u ${DOCKER_USR} -p ${DOCKER_PSW}"
           sh "docker push ${DOCKER_USR}/grpc-web:${env.TAG_NAME}"
         }
+        dir('./sql') {
+          sh "docker build --network=host -t ${DOCKER_USR}/grpc-chat-sql:${env.TAG_NAME} -f ./grpc-chat/Dockerfile ."
+          sh "docker login -u ${DOCKER_USR} -p ${DOCKER_PSW}"
+          sh "docker push ${DOCKER_USR}/grpc-chat-sql:${env.TAG_NAME}"
+        }
+        dir('./sql') {
+          sh "docker build --network=host -t ${DOCKER_USR}/grpc-video-sql:${env.TAG_NAME}  -f ./grpc-video/Dockerfile ."
+          sh "docker login -u ${DOCKER_USR} -p ${DOCKER_PSW}"
+          sh "docker push ${DOCKER_USR}/grpc-video-sql:${env.TAG_NAME}"
+        }
       }
     }
   }
