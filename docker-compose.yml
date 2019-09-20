@@ -36,7 +36,7 @@ services:
   grpc-chat-server:
     ports:
         - "5000:5000"
-    image: jarga/grpc-chat-server:1.0.9
+    image: jarga/grpc-chat-server:1.0.10
     restart: on-failure
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
@@ -44,7 +44,7 @@ services:
   grpc-video-server:
     ports:
         - "5010:5010"
-    image: jarga/grpc-video-server:1.0.9
+    image: jarga/grpc-video-server:1.0.10
     restart: on-failure
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
@@ -52,14 +52,14 @@ services:
   grpc-file-server:
     ports:
         - "50051:50051"
-    image: jarga/grpc-file-server:1.0.9
+    image: jarga/grpc-file-server:1.0.10
     restart: on-failure
     environment:
         - NODE_ENV=development
   grpc-web:
     ports:
         - "3000:3000"
-    image: jarga/grpc-web:1.0.9
+    image: jarga/grpc-web:1.0.10
     restart: on-failure
     environment:
         - NODE_ENV=development
