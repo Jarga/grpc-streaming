@@ -7,7 +7,7 @@ node {
 pipeline {
   agent {
     docker {
-      image 'mcr.microsoft.com/dotnet/core/sdk:3.0-alpine3.9'
+      image 'mcr.microsoft.com/dotnet/core/sdk:3.0.100-rc1-alpine3.9'
       args "--network host --add-host=nuget-local:${nuget_ip}"
     }
   }  
