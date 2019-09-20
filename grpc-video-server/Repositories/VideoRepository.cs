@@ -72,7 +72,11 @@ namespace grpc_video_server.Repositories
             {
                 await conn.OpenAsync();
 
-                var offsetClause = offset.HasValue ? "OFFSET @Offset ROWS" : string.Empty;
+                var offsetClause = offset.HasValue 
+                                    ? "OFFSET @Offset ROWS" 
+                                    : fetch.HasValue 
+                                        ? "OFFSET 0 ROWS" 
+                                        : string.Empty;
                 var fetchClause = fetch.HasValue ? "FETCH NEXT @Fetch ROWS ONLY" : string.Empty;
                 var sql = $@"SELECT * FROM [dbo].[Videos]
                              ORDER BY CreatedAt DESC

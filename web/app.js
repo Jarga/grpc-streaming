@@ -63,11 +63,6 @@ Object.keys(videoHandlers).forEach(key => {
 
   app[handlerEntry.type](`/api/videos/${key}`, handlerEntry.handler);
 });
-
-app.get('/*', function(req, res) {
-  res.sendFile(path.resolve(__dirname, 'views/index.html'))
-})
-
 // log errors in the pipeline
 app.use(logging.createErrLogger('request error'))
 

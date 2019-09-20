@@ -9,7 +9,7 @@ services:
   grpc-chat-sql:
     ports:
         - "1433:1433"
-    image: grpc-chat-sql
+    image: jarga/grpc-chat-sql:1.0.12
     build: 
       context: ./sql
       dockerfile: "./grpc-chat/Dockerfile"
@@ -20,10 +20,7 @@ services:
   grpc-video-sql:
     ports:
         - "1434:1433"
-    image: grpc-video-sql
-    build: 
-      context: ./sql
-      dockerfile: "./grpc-video/Dockerfile"
+    image: jarga/grpc-video-sql:1.0.12
     restart: on-failure
     environment:
         - ACCEPT_EULA=Y
@@ -36,7 +33,7 @@ services:
   grpc-chat-server:
     ports:
         - "5000:5000"
-    image: grpc-chat-server:latest
+    image: jarga/grpc-chat-server:1.0.12
     restart: on-failure
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
@@ -44,7 +41,7 @@ services:
   grpc-video-server:
     ports:
         - "5010:5010"
-    image: grpc-video-server:latest
+    image: jarga/grpc-video-server:1.0.12
     restart: on-failure
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
@@ -52,14 +49,14 @@ services:
   grpc-file-server:
     ports:
         - "50051:50051"
-    image: grpc-file-server:latest
+    image: jarga/grpc-file-server:1.0.12
     restart: on-failure
     environment:
         - NODE_ENV=development
   grpc-web:
     ports:
         - "3000:3000"
-    image: grpc-web:latest
+    image: jarga/grpc-web:1.0.12
     restart: on-failure
     environment:
         - NODE_ENV=development

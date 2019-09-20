@@ -1,8 +1,14 @@
 version: '3.7'
+networks:
+  grpc-ci:
+    name: grpc-ci
+
 services:
   jenkins:
     image: jenkinsci/blueocean
     user: root
+    networks:
+      - grpc-ci
     ports:
       - "8080:8080"
       - "8443:8443"
@@ -14,6 +20,8 @@ services:
   npm-local:
     image: verdaccio/verdaccio:4.1.0
     restart: always
+    networks:
+      - grpc-ci
     ports:
       - "4873:4873"
     volumes:
@@ -21,6 +29,8 @@ services:
   nuget-local:
     image: loicsharma/baget:latest
     restart: always
+    networks:
+      - grpc-ci
     ports:
       - "8000:8000"
     environment:
