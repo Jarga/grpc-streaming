@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +33,7 @@ namespace grpc_video_server.BackgroundServices
 
         private FileEvent FromRedisValue(RedisValue value)
         {
-            return JsonSerializer.Parse<FileEvent>(value.ToString());
+            return JsonSerializer.Deserialize<FileEvent>(value.ToString());
         }
 
         public class FileEvent

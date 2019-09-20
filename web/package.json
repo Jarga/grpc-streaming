@@ -4,17 +4,14 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production npm run bundle:production",
-    "bundle:dev": "cross-env NODE_ENV=development webpack -w --progress",
-    "serve": "cross-env PORT=3000 node app.js",
-    "start": "npm i && npm run serve && npm run bundle:dev"
+    "serve": "cross-env PORT=3000 node app.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.1",
     "body-parser": "^1.19.0",
-    "chat-proto": "^1.0.5",
+    "chat-proto": "^1.0.8",
     "config": "^3.2.2",
     "debug": "^4.1.1",
     "emotion": "^10.0.14",
@@ -26,20 +23,7 @@
     "socket.io-client": "^2.2.0",
     "socket.io-redis": "^5.2.0",
     "stream": "0.0.2",
-    "video-proto": "^1.0.7",
-    "vue": "^2.6.10",
+    "video-proto": "^1.0.8",
     "winston": "^3.2.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.5.4",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/preset-env": "^7.5.4",
-    "babel-loader": "^8.0.6",
-    "cross-env": "^5.2.0",
-    "prettier": "^1.18.2",
-    "vue-loader": "^15.7.0",
-    "vue-template-compiler": "^2.6.10",
-    "webpack": "^4.35.3",
-    "webpack-cli": "^3.3.5"
   }
 }

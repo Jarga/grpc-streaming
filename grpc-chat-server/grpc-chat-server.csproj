@@ -13,15 +13,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="1.60.6" />
-    <PackageReference Include="Grpc.AspNetCore.Server" Version="0.1.21-pre1" />
-    <PackageReference Include="Google.Protobuf" Version="3.8.0" />
+    <PackageReference Include="Dapper" Version="2.0.4" />
+    <PackageReference Include="Grpc.AspNetCore.Server" Version="0.2.23-pre2" />
+    <PackageReference Include="Google.Protobuf" Version="3.10.0-rc1" />
 
-    <PackageReference Include="Grpc.Tools" Version="1.21.0" PrivateAssets="All" />
+    <PackageReference Include="Grpc.Tools" Version="2.24.0-pre1" PrivateAssets="All" />
 
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
 
-    <PackageReference Include="System.Reactive" Version="4.1.5" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.7.0-rc1.19456.4" />
+
+    <PackageReference Include="System.Reactive" Version="4.1.6" />
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace grpc_video_server.Repositories
@@ -90,7 +90,7 @@ namespace grpc_video_server.Repositories
                         VideoId = itemAsDict["Id"].ToString(),
                         FileName = itemAsDict["ExternalFileName"]?.ToString() ?? "STREAM",
                         FileId = itemAsDict["ExternalFileId"]?.ToString() ?? string.Empty,
-                        CreatedAt = JsonSerializer.ToString((DateTimeOffset)itemAsDict["CreatedAt"]),
+                        CreatedAt = JsonSerializer.Serialize((DateTimeOffset)itemAsDict["CreatedAt"]),
                         IsStream = !string.IsNullOrWhiteSpace(itemAsDict["StreamName"]?.ToString())
                     });
                 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
-using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace grpc_chat_server.Repositories
 {
@@ -29,12 +29,12 @@ namespace grpc_chat_server.Repositories
 
         private RedisValue ToRedisValue(Message message)
         {
-            return JsonSerializer.ToString(message);
+            return JsonSerializer.Serialize(message);
         }
 
         private Message FromRedisValue(RedisValue value)
         {
-            return JsonSerializer.Parse<Message>(value.ToString());
+            return JsonSerializer.Deserialize<Message>(value.ToString());
         }
 
         public async Task AddComment(Message message)

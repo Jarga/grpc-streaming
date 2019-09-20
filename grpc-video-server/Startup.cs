@@ -35,7 +35,7 @@ namespace grpc_video_server
 
             services.AddGrpcClient<FileServer.FileServerClient>((options) =>
             {
-                options.BaseAddress = new Uri(Configuration.GetValue<string>("FileServerUrl"));
+                options.Address = new Uri(Configuration.GetValue<string>("FileServerUrl"));
             });
 
             services.AddSingleton((services) =>

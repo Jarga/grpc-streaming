@@ -1,5 +1,5 @@
 #---------------------------- Build ------------------------------#
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-alpine3.9 as build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-rc1-alpine3.9 as build
 
 RUN apk update \
     && apk --no-cache add libc6-compat \
@@ -8,8 +8,9 @@ RUN apk update \
 
 WORKDIR /app
 
+COPY ./*.Config ./
 COPY ./*.csproj ./
-RUN dotnet restore --runtime linux-x64
+RUN dotnet restore --runtime linux-musl-x64
 
 RUN cd /root/.nuget/packages/grpc.tools/*/tools/linux_x64 \
     && rm protoc \
@@ -18,10 +19,10 @@ RUN cd /root/.nuget/packages/grpc.tools/*/tools/linux_x64 \
 
 COPY ./ ./
 
-RUN dotnet publish -o build --runtime linux-x64
+RUN dotnet publish -o build --runtime linux-musl-x64
 
 #--------------------------- Runtime -----------------------------#
-FROM mcr.microsoft.com/dotnet/core/runtime:3.0-alpine3.9 as runtime
+FROM mcr.microsoft.com/dotnet/core/runtime:3.0.0-rc1-alpine3.9 as runtime
 
 WORKDIR /app
 
