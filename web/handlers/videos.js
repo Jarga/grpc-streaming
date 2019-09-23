@@ -1,11 +1,15 @@
 const { Transform } = require('stream')
+const logger = require('../logging').createLogger('videoApiHandler')
 
 const list = (req, res) => {
     const offset = req.body.offset
     const fetch = req.body.fetch
 
     var stream = req.videoService.streamRecords({ offset, fetch })
-    stream.on('error', (error) => res.status(500).send(`Something broke! Error: ${error}`));
+    stream.on('error', (error) => {
+        logger.error("Something broke!", error)
+        res.status(500).send(`Something broke! Error: ${error}`)
+    });
 
     const stringifyTransform = new Transform({
         objectMode: true,

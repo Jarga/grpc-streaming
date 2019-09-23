@@ -3,6 +3,7 @@ const express = require('express')
 const http = require('http')
 const path = require('path')
 const socket_io = require('socket.io')
+const config = require('config');
 
 const logging = require('./logging')
 
@@ -15,6 +16,7 @@ const commentStreamRoom = require('./rooms/commentStream')
 const videoStreamRoom = require('./rooms/videoStream')
 const uploadStreamRoom = require('./rooms/uploadStream')
 
+logger.info(`CONFIG: ${JSON.stringify(config)}`)
 
 // log global unhandled errors
 process.on('unhandledRejection', error => {
