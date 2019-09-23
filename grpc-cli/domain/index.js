@@ -4,7 +4,7 @@
 const path = require('path')
 const grpc = require('grpc')
 const protoLoader = require('@grpc/proto-loader')
-const packageDefinition = protoLoader.loadSync(path.join(__dirname, '..', 'node_modules/files-proto/files.proto'), {
+const packageDefinition = protoLoader.loadSync(path.join(__dirname, '..', 'protos/files.proto'), {
     keepCase: true,
     longs: String,
     enums: String,

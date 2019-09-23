@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+option csharp_namespace = "grpc_file_server";
+
+package FileStream;
+
+// Common
+message File {
+  string id = 1;
+  int64 length = 2;
+  string uploadDate = 3;
+  string filename = 4;
+  string md5 = 5;
+}
+
+// Get File Info
+message FileInfoRequest { string id = 1; }
+
+message FileInfoResult { File file = 1; }
+
+// List
+message ListFilesRequest { string filter = 1; }
+
+message ListFilesResult { repeated File files = 1; }
+
+// Download
+message FileOptions {
+  int64 start = 1;
+  int64 end = 2;
+}
+
+message DownloadRequest {
+  string id = 1;
+  FileOptions options = 2;
+}
+
+message DownloadResult {
+  string id = 1;
+  bytes chunk = 2;
+}
+
+// Upload
+message UploadRequest {
+  string filename = 1;
+  bytes chunk = 2;
+}
+
+message UplpoadResult { File file = 1; }
+
+// Format
+message FormatRequest {}
+
+message FormatResult {}
+
+// Remove
+message RemoveRequest { string id = 1; }
+
+message RemoveResult {}
+
+// Services
+service FileServer {
+  rpc getFileInfo(FileInfoRequest) returns (FileInfoResult) {}
+
+  rpc removeFile(RemoveRequest) returns (RemoveResult) {}
+
+  rpc listFiles(ListFilesRequest) returns (ListFilesResult) {}
+
+  rpc download(DownloadRequest) returns (stream DownloadResult) {}
+
+  rpc upload(stream UploadRequest) returns (UplpoadResult) {}
+
+  rpc formatFileSystem(FormatRequest) returns (FormatResult) {}
+}
