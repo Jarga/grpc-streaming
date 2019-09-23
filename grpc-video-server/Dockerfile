@@ -8,7 +8,6 @@ RUN apk update \
 
 WORKDIR /app
 
-COPY ./*.Config ./
 COPY ./*.csproj ./
 RUN dotnet restore --runtime linux-musl-x64
 

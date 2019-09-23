@@ -5,7 +5,7 @@ const config = require('config');
 
 const videoServerUrl = config.get("videoServerUrl")
 
-const videoProto = protoLoader.loadSync(path.join(__dirname, '..', 'node_modules/video-proto/video.proto'), {
+const videoProto = protoLoader.loadSync(path.join(__dirname, '..', 'protos/video.proto'), {
   keepCase: true,
   longs: String,
   enums: String,
