@@ -6,6 +6,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production npm run bundle:production",
     "bundle:dev": "cross-env NODE_ENV=development webpack -w --progress",
+    "bundle:production": "cross-env NODE_ENV=development webpack --progress",
     "serve": "cross-env PORT=3000 node app.js",
     "start": "npm i && npm run serve && npm run bundle:dev"
   },
@@ -15,6 +16,7 @@
     "@grpc/proto-loader": "^0.5.1",
     "body-parser": "^1.19.0",
     "config": "^3.2.2",
+    "cors": "^2.8.5",
     "debug": "^4.1.1",
     "emotion": "^10.0.14",
     "express": "^4.17.1",
