@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 services:
   mongo:
     image: mongo
@@ -37,7 +37,7 @@ services:
     restart: on-failure
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_URLS=http://localhost:5000
+        - ASPNETCORE_URLS=http://*:5000
   grpc-video-server:
     ports:
         - "5010:5010"
@@ -45,7 +45,7 @@ services:
     restart: on-failure
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_URLS=http://localhost:5010
+        - ASPNETCORE_URLS=http://*:5010
   grpc-file-server:
     ports:
         - "50051:50051"

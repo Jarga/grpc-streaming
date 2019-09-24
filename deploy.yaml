@@ -1,0 +1,335 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      io.grpc.service: grpc-chat-server
+    name: grpc-chat-server
+  spec:
+    ports:
+    - name: "5000"
+      port: 5000
+      targetPort: 5000
+    selector:
+      io.grpc.service: grpc-chat-server
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      io.grpc.service: grpc-chat-sql
+    name: grpc-chat-sql
+  spec:
+    ports:
+    - name: "1433"
+      port: 1433
+      targetPort: 1433
+    selector:
+      io.grpc.service: grpc-chat-sql
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      io.grpc.service: grpc-file-server
+    name: grpc-file-server
+  spec:
+    ports:
+    - name: "50051"
+      port: 50051
+      targetPort: 50051
+    selector:
+      io.grpc.service: grpc-file-server
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      io.grpc.service: grpc-video-server
+    name: grpc-video-server
+  spec:
+    ports:
+    - name: "5010"
+      port: 5010
+      targetPort: 5010
+    selector:
+      io.grpc.service: grpc-video-server
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      io.grpc.service: grpc-video-sql
+    name: grpc-video-sql
+  spec:
+    ports:
+    - name: "1433"
+      port: 1433
+      targetPort: 1433
+    selector:
+      io.grpc.service: grpc-video-sql
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      io.grpc.service: grpc-web
+    name: grpc-web
+  spec:
+    ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+    selector:
+      io.grpc.service: grpc-web
+    type: LoadBalancer
+    loadBalancerIP: 40.87.14.65
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      io.grpc.service: mongo
+    name: mongo
+  spec:
+    ports:
+    - name: "27017"
+      port: 27017
+      targetPort: 27017
+    selector:
+      io.grpc.service: mongo
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      io.grpc.service: redis
+    name: redis
+  spec:
+    ports:
+    - name: "6379"
+      port: 6379
+      targetPort: 6379
+    selector:
+      io.grpc.service: redis
+  status:
+    loadBalancer: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      io.grpc.service: grpc-chat-server
+    name: grpc-chat-server
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          io.grpc.service: grpc-chat-server
+        name: grpc-chat-server
+      spec:
+        containers:
+        - env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Development
+          - name: ASPNETCORE_URLS
+            value: http://*:5000
+          image: jarga/grpc-chat-server:1.0.13
+          name: grpc-chat-server
+          ports:
+          - containerPort: 5000
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      io.grpc.service: grpc-chat-sql
+    name: grpc-chat-sql
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          io.grpc.service: grpc-chat-sql
+        name: grpc-chat-sql
+      spec:
+        containers:
+        - env:
+          - name: ACCEPT_EULA
+            value: "Y"
+          - name: MSSQL_SA_PASSWORD
+            value: grpcstreaming!Rul3s
+          image: jarga/grpc-chat-sql:1.0.13
+          name: grpc-chat-sql
+          ports:
+          - containerPort: 1433
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      io.grpc.service: grpc-file-server
+    name: grpc-file-server
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          io.grpc.service: grpc-file-server
+        name: grpc-file-server
+      spec:
+        containers:
+        - env:
+          - name: NODE_ENV
+            value: development
+          image: jarga/grpc-file-server:1.0.13
+          name: grpc-file-server
+          ports:
+          - containerPort: 50051
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      io.grpc.service: grpc-video-server
+    name: grpc-video-server
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          io.grpc.service: grpc-video-server
+        name: grpc-video-server
+      spec:
+        containers:
+        - env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Development
+          - name: ASPNETCORE_URLS
+            value: http://*:5010
+          image: jarga/grpc-video-server:1.0.13
+          name: grpc-video-server
+          ports:
+          - containerPort: 5010
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      io.grpc.service: grpc-video-sql
+    name: grpc-video-sql
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          io.grpc.service: grpc-video-sql
+        name: grpc-video-sql
+      spec:
+        containers:
+        - env:
+          - name: ACCEPT_EULA
+            value: "Y"
+          - name: MSSQL_SA_PASSWORD
+            value: grpcstreaming!Rul3s
+          image: jarga/grpc-video-sql:1.0.13
+          name: grpc-video-sql
+          ports:
+          - containerPort: 1433
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      io.grpc.service: grpc-web
+    name: grpc-web
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          io.grpc.service: grpc-web
+        name: grpc-web
+      spec:
+        containers:
+        - env:
+          - name: NODE_ENV
+            value: development
+          image: jarga/grpc-web:1.0.13
+          name: grpc-web
+          ports:
+          - containerPort: 3000
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      io.grpc.service: mongo
+    name: mongo
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          io.grpc.service: mongo
+      spec:
+        containers:
+        - image: mongo
+          name: mongo
+          ports:
+          - containerPort: 27017
+          resources: {}
+        restartPolicy: Always
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      io.grpc.service: redis
+    name: redis
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        labels:
+          io.grpc.service: redis
+        name: redis
+      spec:
+        containers:
+        - image: redis:alpine
+          name: redis
+          ports:
+          - containerPort: 6379
+          resources: {}
+        restartPolicy: Always
+  status: {}
+kind: List
+metadata: {}
