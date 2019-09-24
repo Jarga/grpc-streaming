@@ -4,6 +4,7 @@ const http = require('http')
 const path = require('path')
 const socket_io = require('socket.io')
 const config = require('config');
+const cors = require('cors');
 
 const logging = require('./logging')
 
@@ -42,6 +43,7 @@ io.of('/uploads').on('connection', function(socket) {
   uploadStreamRoom.uploadStream(io, socket, videoService)
 })
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -65,6 +67,11 @@ Object.keys(videoHandlers).forEach(key => {
 
   app[handlerEntry.type](`/api/videos/${key}`, handlerEntry.handler);
 });
+
+app.get('/*', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'views/index.html'))
+})
+
 // log errors in the pipeline
 app.use(logging.createErrLogger('request error'))
 
