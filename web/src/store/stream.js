@@ -59,12 +59,16 @@ Object.assign(StreamStore.prototype, {
     log('attempting to start stream')
     const socket = io('/streams', {
       transports: ['websocket'],
-      query: `video_id=${this.videoId}&user_id=sjoyal`,
+      query: `video_id=${this.videoId}&user_id=smcadams`,
     })
 
     var decodedStream = MediaStreamToWebm.DecodedStream({
       videoElement,
-      mimeType: 'video/webm; codecs="opus,vp8"',
+      mimeType: !window.localStorage.audio 
+                  ? 'video/webm; codecs="opus,vp8"' 
+                  : window.localStorage.audio === "true"
+                      ? 'video/webm; codecs="opus,vp8"'
+                      : 'video/webm; codecs="vp8"',
     })
 
     socket.on('connect', () => {
@@ -125,7 +129,7 @@ Object.assign(StreamStore.prototype, {
   manageSocket(ms, buffer) {
     const socket = io('/streams', {
       transports: ['websocket'],
-      query: `video_id=${this.videoId}&user_id=sjoyal`,
+      query: `video_id=${this.videoId}&user_id=smcadams`,
     })
 
     socket.on('connect', () => {

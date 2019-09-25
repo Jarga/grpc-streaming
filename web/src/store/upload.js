@@ -25,7 +25,7 @@ Object.assign(UploadStore.prototype, {
     navigator.mediaDevices
       .getUserMedia({
         video: true,
-        audio: true,
+        audio: !window.localStorage.audio ? true : window.localStorage.audio === "true",
       })
       .then(
         stream => {
@@ -33,7 +33,7 @@ Object.assign(UploadStore.prototype, {
 
           socket.on('connect', () => {
             var encodedStream = MediaStreamToWebm.EncodedStream(stream, {
-              interval: 1000,
+              //interval: 100,
               audioBitsPerSecond: 1000,
               videoBitsPerSecond: 100000,
               mimeType: 'video/webm; codecs="opus,vp8"',

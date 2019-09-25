@@ -6,6 +6,7 @@ items:
     labels:
       io.grpc.service: grpc-chat-server
     name: grpc-chat-server
+    namespace: blackdiamond-hackweek
   spec:
     ports:
     - name: "5000"
@@ -21,6 +22,7 @@ items:
     labels:
       io.grpc.service: grpc-chat-sql
     name: grpc-chat-sql
+    namespace: blackdiamond-hackweek
   spec:
     ports:
     - name: "1433"
@@ -36,6 +38,7 @@ items:
     labels:
       io.grpc.service: grpc-file-server
     name: grpc-file-server
+    namespace: blackdiamond-hackweek
   spec:
     ports:
     - name: "50051"
@@ -49,8 +52,25 @@ items:
   kind: Service
   metadata:
     labels:
+      io.grpc.service: grpc-web
+    name: grpc-web
+    namespace: blackdiamond-hackweek
+  spec:
+    ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+    selector:
+      io.grpc.service: grpc-web
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
       io.grpc.service: grpc-video-server
     name: grpc-video-server
+    namespace: blackdiamond-hackweek
   spec:
     ports:
     - name: "5010"
@@ -66,6 +86,7 @@ items:
     labels:
       io.grpc.service: grpc-video-sql
     name: grpc-video-sql
+    namespace: blackdiamond-hackweek
   spec:
     ports:
     - name: "1433"
@@ -79,25 +100,9 @@ items:
   kind: Service
   metadata:
     labels:
-      io.grpc.service: grpc-web
-    name: grpc-web
-  spec:
-    ports:
-    - name: "3000"
-      port: 3000
-      targetPort: 3000
-    selector:
-      io.grpc.service: grpc-web
-    type: LoadBalancer
-    loadBalancerIP: 40.87.14.65
-  status:
-    loadBalancer: {}
-- apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
       io.grpc.service: mongo
     name: mongo
+    namespace: blackdiamond-hackweek
   spec:
     ports:
     - name: "27017"
@@ -113,6 +118,7 @@ items:
     labels:
       io.grpc.service: redis
     name: redis
+    namespace: blackdiamond-hackweek
   spec:
     ports:
     - name: "6379"
@@ -128,6 +134,7 @@ items:
     labels:
       io.grpc.service: grpc-chat-server
     name: grpc-chat-server
+    namespace: blackdiamond-hackweek
   spec:
     replicas: 1
     strategy: {}
@@ -136,6 +143,7 @@ items:
         labels:
           io.grpc.service: grpc-chat-server
         name: grpc-chat-server
+        namespace: blackdiamond-hackweek
       spec:
         containers:
         - env:
@@ -143,7 +151,7 @@ items:
             value: Development
           - name: ASPNETCORE_URLS
             value: http://*:5000
-          image: jarga/grpc-chat-server:1.0.13
+          image: jarga/grpc-chat-server:1.0.14
           name: grpc-chat-server
           ports:
           - containerPort: 5000
@@ -156,6 +164,7 @@ items:
     labels:
       io.grpc.service: grpc-chat-sql
     name: grpc-chat-sql
+    namespace: blackdiamond-hackweek
   spec:
     replicas: 1
     strategy: {}
@@ -164,6 +173,7 @@ items:
         labels:
           io.grpc.service: grpc-chat-sql
         name: grpc-chat-sql
+        namespace: blackdiamond-hackweek
       spec:
         containers:
         - env:
@@ -171,7 +181,7 @@ items:
             value: "Y"
           - name: MSSQL_SA_PASSWORD
             value: grpcstreaming!Rul3s
-          image: jarga/grpc-chat-sql:1.0.13
+          image: jarga/grpc-chat-sql:1.0.14
           name: grpc-chat-sql
           ports:
           - containerPort: 1433
@@ -184,6 +194,7 @@ items:
     labels:
       io.grpc.service: grpc-file-server
     name: grpc-file-server
+    namespace: blackdiamond-hackweek
   spec:
     replicas: 1
     strategy: {}
@@ -192,12 +203,13 @@ items:
         labels:
           io.grpc.service: grpc-file-server
         name: grpc-file-server
+        namespace: blackdiamond-hackweek
       spec:
         containers:
         - env:
           - name: NODE_ENV
             value: development
-          image: jarga/grpc-file-server:1.0.13
+          image: jarga/grpc-file-server:1.0.14
           name: grpc-file-server
           ports:
           - containerPort: 50051
@@ -210,6 +222,7 @@ items:
     labels:
       io.grpc.service: grpc-video-server
     name: grpc-video-server
+    namespace: blackdiamond-hackweek
   spec:
     replicas: 1
     strategy: {}
@@ -218,6 +231,7 @@ items:
         labels:
           io.grpc.service: grpc-video-server
         name: grpc-video-server
+        namespace: blackdiamond-hackweek
       spec:
         containers:
         - env:
@@ -225,7 +239,7 @@ items:
             value: Development
           - name: ASPNETCORE_URLS
             value: http://*:5010
-          image: jarga/grpc-video-server:1.0.13
+          image: jarga/grpc-video-server:1.0.14
           name: grpc-video-server
           ports:
           - containerPort: 5010
@@ -238,6 +252,7 @@ items:
     labels:
       io.grpc.service: grpc-video-sql
     name: grpc-video-sql
+    namespace: blackdiamond-hackweek
   spec:
     replicas: 1
     strategy: {}
@@ -246,6 +261,7 @@ items:
         labels:
           io.grpc.service: grpc-video-sql
         name: grpc-video-sql
+        namespace: blackdiamond-hackweek
       spec:
         containers:
         - env:
@@ -253,7 +269,7 @@ items:
             value: "Y"
           - name: MSSQL_SA_PASSWORD
             value: grpcstreaming!Rul3s
-          image: jarga/grpc-video-sql:1.0.13
+          image: jarga/grpc-video-sql:1.0.14
           name: grpc-video-sql
           ports:
           - containerPort: 1433
@@ -266,6 +282,7 @@ items:
     labels:
       io.grpc.service: grpc-web
     name: grpc-web
+    namespace: blackdiamond-hackweek
   spec:
     replicas: 1
     strategy: {}
@@ -274,12 +291,13 @@ items:
         labels:
           io.grpc.service: grpc-web
         name: grpc-web
+        namespace: blackdiamond-hackweek
       spec:
         containers:
         - env:
           - name: NODE_ENV
             value: development
-          image: jarga/grpc-web:1.0.13
+          image: jarga/grpc-web:1.0.14
           name: grpc-web
           ports:
           - containerPort: 3000
@@ -292,6 +310,7 @@ items:
     labels:
       io.grpc.service: mongo
     name: mongo
+    namespace: blackdiamond-hackweek
   spec:
     replicas: 1
     strategy: {}
@@ -299,6 +318,7 @@ items:
       metadata:
         labels:
           io.grpc.service: mongo
+        namespace: blackdiamond-hackweek
       spec:
         containers:
         - image: mongo
@@ -314,6 +334,7 @@ items:
     labels:
       io.grpc.service: redis
     name: redis
+    namespace: blackdiamond-hackweek
   spec:
     replicas: 1
     strategy: {}
@@ -322,6 +343,7 @@ items:
         labels:
           io.grpc.service: redis
         name: redis
+        namespace: blackdiamond-hackweek
       spec:
         containers:
         - image: redis:alpine
@@ -331,5 +353,43 @@ items:
           resources: {}
         restartPolicy: Always
   status: {}
+- apiVersion: certmanager.k8s.io/v1alpha1
+  kind: ClusterIssuer
+  metadata:
+    name: letsencrypt
+    namespace: blackdiamond-hackweek
+  spec:
+    acme:
+      server: https://acme-v02.api.letsencrypt.org/directory
+      email: smcadams@sscinc.com
+      privateKeySecretRef:
+        name: letsencrypt
+      http01: {}
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: grpc-ingress
+    namespace: blackdiamond-hackweek
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      certmanager.k8s.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+  spec:
+    tls:
+    - hosts:
+      - blackdiamond-hackweek.eastus.cloudapp.azure.com
+      secretName: tls-secret
+    rules:
+    - host: blackdiamond-hackweek.eastus.cloudapp.azure.com
+      http:
+        paths:
+        - backend:
+            serviceName: grpc-web
+            servicePort: 3000
+          path: /(.*)
+        - backend:
+            serviceName: grpc-file-server
+            servicePort: 50051
+          path: /fileupload
 kind: List
 metadata: {}
