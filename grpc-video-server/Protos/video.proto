@@ -4,10 +4,20 @@ option csharp_namespace = "grpc_video_server";
 
 package VideoStream;
 
+// Common
+message File {
+  string id = 1;
+  int64 length = 2;
+  string uploadDate = 3;
+  string filename = 4;
+  string md5 = 5;
+}
+
 service VideoStream {
     rpc stream(StreamRequest) returns (stream VideoChunk){}
     rpc uploadStream(stream VideoChunk) returns (StreamRecord){}
     rpc streamRecords(RecordStreamRequest) returns (stream VideoRecord){}
+	rpc upload(stream UploadRequest) returns (UploadResult) {}
 }
 
 message StreamRecord { 
@@ -37,4 +47,14 @@ message RecordStreamRequest {
 message StreamRequest { 
 	string video_id = 1;
     string user_id = 2;
+}
+
+// Upload
+message UploadRequest {
+  string filename = 1;
+  bytes chunk = 2;
+}
+
+message UploadResult { 
+	File file = 1; 
 }

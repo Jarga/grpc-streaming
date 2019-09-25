@@ -13,7 +13,7 @@ module.exports.uploadFromFileStream = (filename, readStream) => new Promise((res
     if (!readStream) throw new Error('readSream is required!')
 
     const call = client.upload((err, result) => {
-        if (err) rej(err)
+        if (err) return rej(err)
         res(result.file)
     })
 

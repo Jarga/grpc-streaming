@@ -1,4 +1,5 @@
-const { Transform } = require('stream')
+const { Transform, pipeline, PassThrough  } = require('stream')
+const formidable = require('formidable');
 const logger = require('../logging').createLogger('videoApiHandler')
 
 const list = (req, res) => {
@@ -33,6 +34,70 @@ const list = (req, res) => {
     stream.pipe(stringifyTransform).pipe(res);
 }
 
+const upload = (req, res) => {
+
+    const form = new formidable.IncomingForm();
+    const pass = new PassThrough()
+
+    const fileMeta = {}
+    form.onPart = part => {
+        if (!part.filename) {
+            form.handlePart(part)
+            return
+        }
+
+        fileMeta.filename = part.filename
+
+        part.on('data', function (buffer) {
+            pass.write(buffer)
+        })
+        part.on('end', function () {
+            pass.end()
+        })
+    }
+
+    form.parse(req, err => {
+        if (err) {
+            logger.error(err)
+            next()
+        } else {
+            const call = req.videoService.upload((err, result) => {
+                if (err) {
+                    res.status(500).send(`Upload failed. Error ${err}`)
+                    res.end()
+                } else {
+                    res.status(200).send(`${fileMeta.filename} Uploaded. ${JSON.stringify(result)}`)
+                    res.end()
+                }
+            })
+        
+            // Initialize the write with the filename
+            call.write({ filename: fileMeta.filename, chunk: null })
+
+            // Stream all file data to the client
+            const stream = pipeline(
+                pass,
+                createBytesToMessageTransformStream(fileMeta.filename),
+                call,
+                (err) => {
+                    if (err) {
+                        logger.error(err)
+                        next()
+                    }
+                }
+            )
+        }
+    })    
+}
+
+const createBytesToMessageTransformStream = (filename) => new Transform({
+    objectMode: true,
+    transform: (bytes, _, done) => {
+        done(null, { filename, chunk: bytes })
+    },
+})
+
 module.exports = {
-    ['list'] : { handler: list, type: 'post' }
+    ['list'] : { handler: list, type: 'post' },
+    ['upload'] : { handler: upload, type: 'post' }
 }

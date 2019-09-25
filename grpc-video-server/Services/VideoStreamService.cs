@@ -32,6 +32,41 @@ namespace grpc_video_server
             _redisMultiplexer = redisMultiplexer;
         }
 
+        public override async Task<UploadResult> upload(IAsyncStreamReader<UploadRequest> requestStream, ServerCallContext context)
+        {
+            var stream = _fileServerClient.upload();
+
+            var uploadStream = stream.RequestStream;
+
+            // TODO: Transcode?
+            while (await requestStream.MoveNext(context.CancellationToken))
+            {
+                var chunk = requestStream.Current;
+
+                await uploadStream.WriteAsync(new grpc_file_server.UploadRequest
+                {
+                    Chunk = chunk.Chunk,
+                    Filename = chunk.Filename
+                });
+            }
+
+            await uploadStream.CompleteAsync();
+
+            var result = await stream;
+
+            return new UploadResult
+            {
+                File = new File
+                {
+                    Id = result.File.Id,
+                    Filename = result.File.Filename,
+                    Length = result.File.Length,
+                    UploadDate = result.File.UploadDate,
+                    Md5 = result.File.Md5
+                }
+            };
+        }
+
         public override async Task<StreamRecord> uploadStream(IAsyncStreamReader<VideoChunk> requestStream, ServerCallContext context)
         {
             var streamId = Guid.NewGuid();
