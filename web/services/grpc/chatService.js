@@ -5,7 +5,7 @@ const config = require('config');
 
 const videoServerUrl = config.get("chatServerUrl")
 
-const chatProto = protoLoader.loadSync(path.join(__dirname, '..', 'protos/chat.proto'), {
+const chatProto = protoLoader.loadSync(path.join(__dirname, '../../', 'protos/chat.proto'), {
   keepCase: true,
   longs: String,
   enums: String,

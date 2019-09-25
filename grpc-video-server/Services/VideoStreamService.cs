@@ -43,7 +43,6 @@ namespace grpc_video_server
             {
                 var chunk = requestStream.Current.Chunk;
                 await db.PublishAsync(streamId.ToString(), ToRedisValue(new VideoChunk { VideoId = streamId.ToString(), Chunk = chunk }));
-
             }
 
             return new StreamRecord

@@ -1,21 +1,25 @@
 const bodyParser = require('body-parser')
 const express = require('express')
-const http = require('http')
+const https = require('https')
 const path = require('path')
 const socket_io = require('socket.io')
-const config = require('config');
-const cors = require('cors');
+const config = require('config')
+const cors = require('cors')
+const fs = require('fs')
 
 const logging = require('./logging')
 
 const PORT = process.env.PORT || 3000
 const logger = logging.createLogger('global')
 
-const videoService = require('./services/videoService').create()
-const chatService = require('./services/chatService').create()
+const videoService = require('./services/grpc/videoService').create()
+const chatService = require('./services/grpc/chatService').create()
+const orchestrator = require('./services/orchestratorService')
 const commentStreamRoom = require('./rooms/commentStream')
-const videoStreamRoom = require('./rooms/videoStream')
+const chatroomStreamRoom = require('./rooms/chatroomStream')
 const uploadStreamRoom = require('./rooms/uploadStream')
+
+const stateManager = require('./repositories/stateManagementRepository')
 
 logger.info(`CONFIG: ${JSON.stringify(config)}`)
 
@@ -29,14 +33,21 @@ process.on('uncaughtException', error => {
 })
 
 const app = express()
-const server = http.createServer(app)
+const server = https.createServer({
+  key: fs.readFileSync('./server.key'),
+  cert: fs.readFileSync('./server.cert')
+}, app)
 
 // register socket stuff
 const io = socket_io.listen(server)
 
+io.on('connection', function(socket) {
+  orchestrator.init(io, socket, chatService, videoService)
+})
+
 io.of('/streams').on('connection', function(socket) {
   commentStreamRoom.subscribe(io, socket, chatService)
-  videoStreamRoom.subscribe(io, socket, videoService)
+  chatroomStreamRoom.subscribe(io, socket, videoService)
 })
 
 io.of('/uploads').on('connection', function(socket) {
@@ -67,6 +78,10 @@ Object.keys(videoHandlers).forEach(key => {
 
   app[handlerEntry.type](`/api/videos/${key}`, handlerEntry.handler);
 });
+
+app.get('/diagnostics', function (req, res) {
+  res.json(stateManager.getState())
+})
 
 app.get('/*', function(req, res) {
   res.sendFile(path.resolve(__dirname, 'views/index.html'))

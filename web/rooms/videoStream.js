@@ -23,8 +23,4 @@ module.exports.subscribe = function (io, socket, videoService) {
             logger.info(`Video ${video_id} ended.`)
         })
     }
-  
-    socket.on('disconnect', function () {
-        logger.info(`User ${user_id} disconnected from video ${video_id}`)
-    });
 };
