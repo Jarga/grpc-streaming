@@ -1,9 +1,14 @@
 import debug from 'debug'
 import io from 'socket.io-client'
-import MediaStreamToWebm from 'mediastream-to-webm'
+//import MediaStreamToWebm from 'mediastream-to-webm'
+import DecodedStream from './decodedStream'
 
 const log = debug('grpc-streaming:web:stream')
-const mimecodec = 'video/mp4; codecs="avc1.4d001e,mp4a.40.5"'
+const mimecodec = !window.localStorage.audio 
+? 'video/webm; codecs="opus,vp8"' 
+: window.localStorage.audio === "true"
+    ? 'video/webm; codecs="opus,vp8"'
+    : 'video/webm; codecs="vp8"'//'video/mp4; codecs="avc1.4d001e,mp4a.40.5"'
 
 function StreamStore() {
   this.state = {
@@ -61,16 +66,17 @@ Object.assign(StreamStore.prototype, {
       transports: ['websocket'],
       query: `video_id=${this.videoId}&user_id=smcadams`,
     })
-
-    var decodedStream = MediaStreamToWebm.DecodedStream({
-      videoElement,
-      mimeType: !window.localStorage.audio 
+    var mimeType = !window.localStorage.audio 
                   ? 'video/webm; codecs="opus,vp8"' 
                   : window.localStorage.audio === "true"
                       ? 'video/webm; codecs="opus,vp8"'
-                      : 'video/webm; codecs="vp8"',
-    })
-
+                      : 'video/webm; codecs="vp8"'
+    //var elementWrapper = MediaElementWrapper(videoElement)
+    //var decodedStream = elementWrapper.createWriteStream(mimeType)
+    var decodedStream = DecodedStream({
+        videoElement,
+        mimeType
+      })
     socket.on('connect', () => {
       log('socket connected')
       this.state.error = null
@@ -111,7 +117,7 @@ Object.assign(StreamStore.prototype, {
     return () => {
       log('sourceopen event fired')
       const buffer = ms.addSourceBuffer(mimecodec)
-      buffer.mode = 'sequence'
+      buffer.mode = 'segments'
 
       buffer.addEventListener('update', () => {
         log('source buffer update')

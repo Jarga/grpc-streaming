@@ -151,7 +151,7 @@ items:
             value: Development
           - name: ASPNETCORE_URLS
             value: http://*:5000
-          image: jarga/grpc-chat-server:1.0.14
+          image: jarga/grpc-chat-server:1.0.15
           name: grpc-chat-server
           ports:
           - containerPort: 5000
@@ -181,7 +181,7 @@ items:
             value: "Y"
           - name: MSSQL_SA_PASSWORD
             value: grpcstreaming!Rul3s
-          image: jarga/grpc-chat-sql:1.0.14
+          image: jarga/grpc-chat-sql:1.0.15
           name: grpc-chat-sql
           ports:
           - containerPort: 1433
@@ -209,7 +209,7 @@ items:
         - env:
           - name: NODE_ENV
             value: development
-          image: jarga/grpc-file-server:1.0.14
+          image: jarga/grpc-file-server:1.0.15
           name: grpc-file-server
           ports:
           - containerPort: 50051
@@ -239,7 +239,7 @@ items:
             value: Development
           - name: ASPNETCORE_URLS
             value: http://*:5010
-          image: jarga/grpc-video-server:1.0.14
+          image: jarga/grpc-video-server:1.0.15
           name: grpc-video-server
           ports:
           - containerPort: 5010
@@ -269,7 +269,7 @@ items:
             value: "Y"
           - name: MSSQL_SA_PASSWORD
             value: grpcstreaming!Rul3s
-          image: jarga/grpc-video-sql:1.0.14
+          image: jarga/grpc-video-sql:1.0.15
           name: grpc-video-sql
           ports:
           - containerPort: 1433
@@ -297,7 +297,7 @@ items:
         - env:
           - name: NODE_ENV
             value: development
-          image: jarga/grpc-web:1.0.14
+          image: jarga/grpc-web:1.0.15
           name: grpc-web
           ports:
           - containerPort: 3000
@@ -387,9 +387,5 @@ items:
             serviceName: grpc-web
             servicePort: 3000
           path: /(.*)
-        - backend:
-            serviceName: grpc-file-server
-            servicePort: 50051
-          path: /fileupload
 kind: List
 metadata: {}
