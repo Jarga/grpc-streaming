@@ -5,29 +5,31 @@ const chatroomRepository = require('../repositories/chatroomRepository')
 /* Private Functions */
 const exitChatroom = (user_id) => {
     const chatroom = chatroomRepository.getUsersChatroom(user_id)
-    activeUsersService.markUsersAsAvailable(chatroom.users)
-
-    chatroom.streams.forEach(stream => {
-        stream.end()
-    })
 
     if (!chatroom) {
         logger.info(`User ${user_id} could not exit chatroom; it wasn't in one`)
+        return
     }
     else if (chatroom.users.length === 1) {
+        activeUsersService.markUsersAsAvailable(chatroom.users)
         chatroomRepository.deleteChatroom(chatroom.chat_id)
     }
     else {
+        activeUsersService.markUsersAsAvailable(chatroom.users)
         chatroomRepository.updateChatroom(chatroom.chat_id, {
             ...chatroom,
             users: chatroom.users.filter(user => user !== user_id),
         })
     }
+
+    chatroom.streams.forEach(stream => {
+        stream.end()
+    })
 }
 
 /* Public Functions */
 const joinChatroom = (user_id, io, videoService) => {
-    const new_active_user_id = activeUsersService.getAvailableUser()
+    const new_active_user_id = activeUsersService.getAvailableUser(user_id)
 
     exitChatroom(user_id)
     let chatroom
@@ -38,10 +40,10 @@ const joinChatroom = (user_id, io, videoService) => {
         logger.info(`User ${user_id} has created a chatroom and waiting for someone to join`)
         
     } else { 
-        chatroom = chatroomRepository.joinUsersChatroom(user_id, active_user_id)
+        chatroom = chatroomRepository.joinUsersChatroom(user_id, new_active_user_id)
 
         activeUsersService.markUsersAsUnavailable([user_id, new_active_user_id])
-        chatroomService.initializeChatroom(user_id, io, videoService)
+        initializeChatroom(user_id, io, videoService)
     }
 
     return chatroom

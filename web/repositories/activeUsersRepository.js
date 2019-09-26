@@ -9,7 +9,8 @@ const createUserInfo = (user_id, video_id, socket) => {
         isAvailable: true,
         availableAt: new Date(),
         video_id,
-        socket
+        //TODO Cannot Use the socket because it's a circular reference
+        // socket
     }
 
     users[user_id] = userInformation

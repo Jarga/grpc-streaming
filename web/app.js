@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser')
 const express = require('express')
 const https = require('https')
+const http = require('http')
 const path = require('path')
 const socket_io = require('socket.io')
 const config = require('config')
@@ -33,10 +34,11 @@ process.on('uncaughtException', error => {
 })
 
 const app = express()
-const server = https.createServer({
-  key: fs.readFileSync('./server.key'),
-  cert: fs.readFileSync('./server.cert')
-}, app)
+const server = http.createServer(app)
+// const server = https.createServer({
+//   key: fs.readFileSync('./server.key'),
+//   cert: fs.readFileSync('./server.cert')
+// }, app)
 
 // register socket stuff
 const io = socket_io.listen(server)

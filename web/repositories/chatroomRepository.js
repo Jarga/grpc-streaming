@@ -9,11 +9,15 @@ const createChatroom = (users) => {
         users,
     }
 
-    chatrooms.push(chatroom)
+    chatrooms[chatId] = chatroom
     return chatroom
 }
 
-const getUsersChatroom = (user_id) => chatrooms.filter(cr => cr.users.some(user => user === user_id))[0]
+const getUsersChatroom = (user_id) => {
+    if (chatrooms.length <= 0) return undefined
+
+    return chatrooms.filter(cr => cr.users.some(user => user === user_id))[0]
+}
 
 const updateChatroom = (chat_id, chatroom) => {
     chatrooms[chat_id] = {
@@ -30,7 +34,8 @@ const joinUsersChatroom = (user_id, other_user_id) => {
 }
 
 const deleteChatroom = (chat_id) => {
-    delete chatrooms[chat_id];
+
+
 }
 
 module.exports = {

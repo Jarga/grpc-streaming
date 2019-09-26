@@ -4,6 +4,9 @@ const activeStreamsService = require('./activeUsersService')
 
 const init = (io, socket, chatService, videoService) => {
     const user_id = socket.handshake.query.user_id
+    // TODO do we need thsi
+    const video_id = ''
+
     logger.info(`Initializing Socket for ${user_id}`)
 
     const userInfo = activeUsersService.createUserInfo(user_id, video_id, socket)

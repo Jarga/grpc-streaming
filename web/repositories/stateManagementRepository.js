@@ -1,7 +1,7 @@
 const state = {
     activeStreams: {},
     activeUsers: {},
-    chatrooms: [],
+    chatrooms: {},
 }
 
 module.exports = {
