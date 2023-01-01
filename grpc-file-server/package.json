@@ -23,7 +23,7 @@
   "homepage": "https://github.com/Jarga/grpc-streaming#readme",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.1",
-    "config": "^3.2.0",
+    "config": "^3.3.8",
     "deepcopy": "^2.0.0",
     "grpc": "^1.22.2",
     "ioredis": "^4.11.2",
